@@ -1,8 +1,8 @@
-# PhoLan POS - Hệ thống Order Web
+# Ocha Việt POS - Hệ thống Order Web
 
 ## 🎯 Tổng quan
 
-PhoLan POS là một hệ thống POS (Point of Sale) order web hoàn chỉnh được xây dựng bằng React + TypeScript + Tailwind CSS. Hệ thống cho phép khách hàng tại quán chọn món ăn, tùy chỉnh size, topping, ghi chú đặc biệt, tính giá realtime và thanh toán tại quầy.
+Ocha Việt POS là một hệ thống POS (Point of Sale) order web hoàn chỉnh được xây dựng bằng React + TypeScript + Tailwind CSS. Hệ thống cho phép khách hàng tại quán chọn món ăn, tùy chỉnh size, topping, ghi chú đặc biệt, tính giá realtime và thanh toán tại quầy.
 
 ## ✨ Tính năng chính
 

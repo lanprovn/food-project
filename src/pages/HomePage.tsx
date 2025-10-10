@@ -6,7 +6,7 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
       <div className="text-center">
         <h1 className="text-6xl font-bold text-gray-800 mb-8">
-          PhoLan POS
+          Ocha Việt
         </h1>
         <p className="text-xl text-gray-600 mb-12">
           Hệ thống POS Order Web
