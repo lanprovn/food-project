@@ -42,7 +42,7 @@ const POSPage: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              FoodWagon POS - Hệ thống Order
+              PhoLan POS - Hệ thống Order
             </h1>
             <p className="text-gray-600">
               Chọn món ăn và thức uống từ menu bên dưới

@@ -27,7 +27,7 @@ const OrderSuccessPage: React.FC = () => {
             Đơn hàng đã được ghi nhận!
           </h1>
           <p className="text-gray-600 text-lg">
-            Cảm ơn bạn đã sử dụng dịch vụ của FoodWagon. 
+            Cảm ơn bạn đã sử dụng dịch vụ của PhoLan POS. 
             Đơn hàng của bạn đang được chuẩn bị.
           </p>
         </div>
