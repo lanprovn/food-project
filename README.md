@@ -1,61 +1,39 @@
-# Phở Việt - Website Giao Đồ Ăn
+# Phở Việt - Hệ thống POS Order Web
 
-Một website thương mại điện tử hoàn chỉnh về giao đồ ăn được xây dựng bằng React + TypeScript + Tailwind CSS, hoàn toàn bằng tiếng Việt.
+## 🎯 Tổng quan
 
-## 🌟 Tính năng chính
+Phở Việt là một hệ thống POS (Point of Sale) order web hoàn chỉnh được xây dựng bằng React + TypeScript + Tailwind CSS. Hệ thống cho phép khách hàng tại quán chọn món ăn, tùy chỉnh size, topping, ghi chú đặc biệt, tính giá realtime và thanh toán tại quầy.
 
-### 🛒 Giỏ hàng (Cart)
-- Thêm, xóa, tăng/giảm số lượng sản phẩm
-- Lưu trữ trong localStorage
-- Tính toán tổng tiền, phí giao hàng, thuế
-- Sidebar cart với animation mượt mà
+## ✨ Tính năng chính
 
-### 👤 Tài khoản người dùng (Authentication)
-- Đăng nhập/Đăng ký với mock data
-- Lưu thông tin user vào localStorage
-- Hiển thị tên user ở header
-- User menu với dropdown
+### 🍽️ Hệ thống POS
+- **Layout 3 vùng**: Sidebar danh mục, Grid sản phẩm, Panel giỏ hàng
+- **Responsive design**: Hoạt động tốt trên desktop và tablet
+- **Real-time pricing**: Tính giá tự động theo size, topping và số lượng
+- **Cart management**: Quản lý giỏ hàng với localStorage persistence
 
-### ❤️ Danh sách yêu thích (Wishlist)
-- Thêm/xóa sản phẩm khỏi wishlist
-- Lưu trữ trong localStorage
-- Hiển thị số lượng ở header
-- Trang wishlist riêng biệt
+### 🛍️ Quản lý sản phẩm
+- **Size options**: Nhỏ, Vừa, Lớn với giá khác nhau
+- **Topping system**: Thêm topping với giá phụ thu
+- **Product details**: Ảnh, mô tả, rating, nhà hàng
+- **Category filtering**: Lọc theo danh mục sản phẩm
 
-### 🔍 Tìm kiếm và lọc
-- Tìm kiếm theo tên món ăn, nhà hàng, danh mục
-- Lọc theo danh mục sản phẩm
-- Kết quả tìm kiếm real-time
+### 💰 Thanh toán
+- **Multiple payment methods**: Tiền mặt, QR Code, Thẻ ngân hàng
+- **Order confirmation**: Trang xác nhận đơn hàng thành công
+- **Customer info**: Thu thập thông tin khách hàng và số bàn
 
-### 📱 Responsive Design
-- Hoàn toàn responsive trên mọi thiết bị
-- Mobile menu với offcanvas
-- Grid layout linh hoạt
-- Touch-friendly interface
+### 🎨 Giao diện người dùng
+- **Modern UI**: Thiết kế phẳng với màu sắc dịu nhẹ
+- **Animations**: Hiệu ứng hover, transition mượt mà
+- **Toast notifications**: Thông báo khi thêm/xóa sản phẩm
+- **Loading states**: Trạng thái tải cho các thao tác
 
-### 🎨 UI/UX hiện đại
-- Gradient buttons với hover effects
-- Card hover animations
-- Toast notifications
-- Loading states
-- Smooth transitions
-
-## 🚀 Công nghệ sử dụng
-
-- **Frontend**: React 19 + TypeScript
-- **Styling**: Tailwind CSS 4
-- **Routing**: React Router DOM 7
-- **State Management**: Context API
-- **Notifications**: React Hot Toast
-- **Icons**: Font Awesome
-- **Build Tool**: Vite
-- **Package Manager**: npm
-
-## 📦 Cài đặt và chạy
+## 🚀 Cài đặt và chạy
 
 ### Yêu cầu hệ thống
-- Node.js 18+ 
-- npm 9+
+- Node.js >= 16.0.0
+- npm >= 8.0.0
 
 ### Cài đặt dependencies
 ```bash
@@ -67,14 +45,9 @@ npm install
 npm run dev
 ```
 
-### Build cho production
+### Build production
 ```bash
 npm run build
-```
-
-### Preview production build
-```bash
-npm run preview
 ```
 
 ## 📁 Cấu trúc dự án
@@ -82,114 +55,106 @@ npm run preview
 ```
 src/
 ├── components/
-│   ├── auth/           # Components đăng nhập/đăng ký
-│   ├── cart/           # Components giỏ hàng
-│   ├── home/           # Components trang chủ
-│   ├── layout/         # Components layout (Header, Footer, Navbar)
-│   ├── product/        # Components sản phẩm
-│   ├── shared/         # Components dùng chung
-│   └── ui/             # UI components (Modal, Toast, Dropdown)
-├── context/            # React Context providers
-├── hooks/              # Custom hooks
-├── pages/              # Page components
-├── router/             # Router configuration
-├── service/             # API service (axios instance)
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-└── assets/              # Static assets (images, data)
+│   ├── pos/                    # Components cho hệ thống POS
+│   │   ├── CartPanel.tsx      # Panel giỏ hàng bên phải
+│   │   ├── ProductCard.tsx    # Card sản phẩm
+│   │   ├── ProductGrid.tsx    # Grid hiển thị sản phẩm
+│   │   ├── ProductModal.tsx   # Modal chi tiết sản phẩm
+│   │   └── SidebarCategory.tsx # Sidebar danh mục
+│   └── ...
+├── context/
+│   ├── CartContext.tsx         # Context quản lý giỏ hàng
+│   └── ProductContext.tsx     # Context quản lý sản phẩm
+├── pages/
+│   ├── POSPage.tsx            # Trang chính của hệ thống POS
+│   ├── CheckoutPage.tsx       # Trang thanh toán
+│   ├── OrderSuccessPage.tsx   # Trang xác nhận đơn hàng
+│   └── ...
+├── types/
+│   ├── cart.ts               # Types cho giỏ hàng
+│   └── product.ts            # Types cho sản phẩm
+├── assets/
+│   └── products.json         # Dữ liệu sản phẩm với size/topping
+└── ...
 ```
 
-## 🎯 Tính năng đã hoàn thành
+## 🎮 Cách sử dụng
 
-### ✅ Việt hóa hoàn toàn
-- Tất cả text đều bằng tiếng Việt
-- Định dạng tiền tệ Việt Nam (VND)
-- Thông báo lỗi tiếng Việt
-- Placeholder và label tiếng Việt
+### 1. Truy cập hệ thống POS
+- Mở trình duyệt và truy cập `http://localhost:3002/pos`
+- Hoặc click nút "Mở hệ thống POS" từ trang chủ
 
-### ✅ Chức năng thương mại điện tử
-- Giỏ hàng với localStorage
-- Thanh toán với form validation
-- Đăng nhập/đăng ký mock
-- Tìm kiếm và lọc sản phẩm
-- Danh sách yêu thích
-- Responsive design
+### 2. Chọn sản phẩm
+- Chọn danh mục từ sidebar bên trái
+- Click vào sản phẩm để mở modal chi tiết
+- Chọn size, topping, số lượng và ghi chú
+- Click "Thêm vào giỏ hàng"
 
-### ✅ UI/UX chuyên nghiệp
-- Design system nhất quán
-- Animations và transitions
-- Toast notifications
-- Loading states
-- Error handling
+### 3. Quản lý giỏ hàng
+- Xem giỏ hàng ở panel bên phải
+- Tăng/giảm số lượng hoặc xóa sản phẩm
+- Tổng tiền được tính tự động
 
-### ✅ Tối ưu hiệu suất
-- Code splitting
-- Lazy loading
-- Optimized images
-- Efficient state management
+### 4. Thanh toán
+- Click "Thanh toán" để chuyển đến trang checkout
+- Nhập thông tin khách hàng
+- Chọn phương thức thanh toán
+- Hoàn tất đơn hàng
 
-## 🔧 Cấu hình
+## 🔧 Công nghệ sử dụng
 
-### Environment Variables
-Tạo file `.env.local` để cấu hình:
-```env
-VITE_API_BASE_URL=http://localhost:8080/api
-VITE_APP_NAME=Phở Việt
+- **Frontend**: React 18 + TypeScript
+- **Styling**: Tailwind CSS
+- **Icons**: Heroicons
+- **State Management**: React Context API
+- **Routing**: React Router
+- **Build Tool**: Vite
+- **Package Manager**: npm
+
+## 📊 Dữ liệu sản phẩm
+
+Hệ thống sử dụng file `src/assets/products.json` chứa:
+- Thông tin sản phẩm: tên, giá, ảnh, mô tả
+- Size options: Nhỏ, Vừa, Lớn với extraPrice
+- Topping options: Các topping với extraPrice
+- Categories: Danh mục sản phẩm
+- Restaurants: Thông tin nhà hàng
+
+## 🎯 Logic tính giá
+
+```typescript
+const basePrice = product.price;
+const sizePrice = selectedSize?.extraPrice || 0;
+const toppingPrice = selectedToppings.reduce((sum, t) => sum + t.extraPrice, 0);
+const totalPrice = (basePrice + sizePrice + toppingPrice) * quantity;
 ```
 
-### Tailwind CSS
-Cấu hình trong `tailwind.config.js`:
-- Primary color: #F54748 (đỏ cam)
-- Secondary color: #FDC55E (vàng nhạt)
-- Font family: Poppins, Inter
+## 💾 Lưu trữ dữ liệu
 
-## 📱 Responsive Breakpoints
+- **Cart persistence**: Giỏ hàng được lưu trong localStorage
+- **Session data**: Dữ liệu được giữ qua refresh trang
+- **No backend required**: Hoạt động hoàn toàn frontend
 
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: > 1024px
+## 🔮 Tính năng tương lai
 
-## 🎨 Design System
+- [ ] Tích hợp backend API
+- [ ] Quản lý đơn hàng real-time
+- [ ] Báo cáo doanh thu
+- [ ] Quản lý kho hàng
+- [ ] Hệ thống khuyến mãi
+- [ ] Tích hợp payment gateway
+- [ ] Mobile app
 
-### Colors
-- Primary: #F54748 (đỏ cam)
-- Secondary: #FDC55E (vàng nhạt)
-- Success: #10b981 (xanh lá)
-- Error: #ef4444 (đỏ)
-- Warning: #f59e0b (cam)
+## 📝 Ghi chú phát triển
 
-### Typography
-- Font family: Poppins, Inter
-- Headings: font-weight 600-700
-- Body: font-weight 400-500
-
-### Spacing
-- Base unit: 4px
-- Common spacing: 8px, 16px, 24px, 32px
-
-## 🚀 Deployment
-
-### Vercel
-```bash
-npm run build
-vercel --prod
-```
-
-### Netlify
-```bash
-npm run build
-netlify deploy --prod --dir=dist
-```
-
-### GitHub Pages
-```bash
-npm run build
-npm run deploy
-```
+- Hệ thống được thiết kế để dễ dàng mở rộng
+- Code được viết với TypeScript để đảm bảo type safety
+- Component được tách biệt rõ ràng để dễ maintain
+- Responsive design hỗ trợ nhiều thiết bị
 
 ## 🤝 Đóng góp
 
-1. Fork dự án
+1. Fork repository
 2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
@@ -199,24 +164,17 @@ npm run deploy
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-## 👥 Tác giả
+## 👨‍💻 Tác giả
 
-- **Phở Việt Team** - *Initial work* - [Phở Việt](https://github.com/phoviet)
+**Lan Pro** - [@lanprovn](https://github.com/lanprovn)
 
-## 🙏 Acknowledgments
+## 🙏 Lời cảm ơn
 
-- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
-- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
-- [Vite](https://vitejs.dev/) - Next generation frontend tooling
-- [React Router](https://reactrouter.com/) - Declarative routing for React
-- [React Hot Toast](https://react-hot-toast.com/) - Smoking hot React notifications
-
-## 📞 Liên hệ
-
-- **Email**: info@phoviet.com
-- **Phone**: +84 123 456 789
-- **Website**: [phoviet.com](https://phoviet.com)
+- React team cho framework tuyệt vời
+- Tailwind CSS cho utility-first CSS framework
+- Heroicons cho icon set đẹp
+- Cộng đồng open source
 
 ---
 
-⭐ Nếu dự án này hữu ích, hãy cho chúng tôi một star trên GitHub!
+⭐ Nếu project này hữu ích, hãy cho một star nhé!
