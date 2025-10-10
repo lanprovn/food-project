@@ -1,0 +1,296 @@
+import React, { useState, useEffect } from 'react';
+import type { Product } from '../../types/product';
+import { formatPrice } from '../../utils/formatPrice';
+import { useCart } from '../../hooks/useCart';
+import toast from 'react-hot-toast';
+
+interface ProductDetailModalProps {
+  product: Product;
+  onClose: () => void;
+}
+
+interface ProductOption {
+  id: string;
+  name: string;
+  price: number;
+}
+
+const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
+  product,
+  onClose,
+}) => {
+  const { addItem } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
+  const [notes, setNotes] = useState('');
+  const [currentPrice, setCurrentPrice] = useState(product.price);
+  const [totalToppingPrice, setTotalToppingPrice] = useState(0);
+
+  // Reset state when product changes
+  useEffect(() => {
+    setCurrentPrice(product.price);
+    setSelectedSize('');
+    setSelectedToppings([]);
+    setTotalToppingPrice(0);
+    setQuantity(1);
+    setNotes('');
+  }, [product]);
+
+  // Mock data for sizes and toppings
+  const sizes: ProductOption[] = [
+    { id: 'small', name: 'Nhỏ', price: 0 },
+    { id: 'medium', name: 'Vừa', price: 5000 },
+    { id: 'large', name: 'Lớn', price: 10000 },
+  ];
+
+  const toppings: ProductOption[] = [
+    { id: 'extra-milk', name: 'Thêm sữa', price: 3000 },
+    { id: 'extra-sugar', name: 'Thêm đường', price: 0 },
+    { id: 'ice', name: 'Thêm đá', price: 0 },
+    { id: 'whipped-cream', name: 'Kem tươi', price: 5000 },
+    { id: 'caramel', name: 'Caramel', price: 4000 },
+    { id: 'vanilla', name: 'Vanilla', price: 3000 },
+  ];
+
+  const handleSizeSelect = (sizeId: string) => {
+    setSelectedSize(sizeId);
+    
+    // Calculate new price with size
+    const sizeOption = sizes.find(s => s.id === sizeId);
+    const sizePrice = sizeOption ? sizeOption.price : 0;
+    const newPrice = product.price + sizePrice + totalToppingPrice;
+    setCurrentPrice(newPrice);
+  };
+
+  const calculateTotalPrice = () => {
+    return currentPrice * quantity;
+  };
+
+  const handleAddToCart = () => {
+    const cartItem = {
+      ...product,
+      quantity,
+      price: currentPrice,
+      size: selectedSize,
+      toppings: selectedToppings,
+      notes,
+      totalPrice: calculateTotalPrice(),
+    };
+    
+    addItem(cartItem);
+    
+    // Show success toast
+    toast.success(`Đã thêm ${product.name} vào giỏ hàng!`, {
+      duration: 2000,
+      style: {
+        background: '#10B981',
+        color: '#fff',
+        fontSize: '16px',
+        fontWeight: 'bold',
+      },
+    });
+    
+    onClose();
+  };
+
+  const handleToppingToggle = (toppingId: string) => {
+    const alreadySelected = selectedToppings.includes(toppingId);
+    let updatedToppings;
+    
+    if (alreadySelected) {
+      updatedToppings = selectedToppings.filter(id => id !== toppingId);
+    } else {
+      updatedToppings = [...selectedToppings, toppingId];
+    }
+    
+    setSelectedToppings(updatedToppings);
+
+    // Calculate total topping price
+    const toppingTotal = updatedToppings.reduce((sum, id) => {
+      const topping = toppings.find(t => t.id === id);
+      return sum + (topping?.price || 0);
+    }, 0);
+
+    setTotalToppingPrice(toppingTotal);
+
+    // Calculate new price with toppings
+    const sizeOption = sizes.find(s => s.id === selectedSize);
+    const sizePrice = sizeOption ? sizeOption.price : 0;
+    const newPrice = product.price + sizePrice + toppingTotal;
+    setCurrentPrice(newPrice);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-5xl w-full max-h-[95vh] overflow-y-auto shadow-2xl">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-bold text-gray-800">Chi tiết món ăn</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 text-3xl"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Product Image */}
+            <div>
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-80 object-cover rounded-2xl shadow-lg"
+              />
+            </div>
+
+            {/* Product Details */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">{product.name}</h3>
+                <p className="text-lg text-gray-600 mb-4">{product.description}</p>
+                <div className="flex items-center space-x-4">
+                  <div 
+                    key={currentPrice}
+                    className="text-3xl font-bold text-orange-600 transition-all duration-300 animate-pulse"
+                    style={{
+                      animation: 'none',
+                      transform: 'scale(1)',
+                      transition: 'transform 0.2s ease-in-out'
+                    }}
+                    onAnimationEnd={(e) => {
+                      e.currentTarget.style.animation = 'none';
+                    }}
+                  >
+                    {formatPrice(currentPrice)}
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <i className="fas fa-star text-yellow-400 text-xl"></i>
+                    <span className="text-lg font-semibold text-gray-600">
+                      {product.rating}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Size Selection */}
+              <div>
+                <h4 className="text-xl font-bold text-gray-800 mb-4">Chọn kích thước</h4>
+                <div className="grid grid-cols-3 gap-3">
+                  {sizes.map((size) => (
+                    <button
+                      key={size.id}
+                      onClick={() => handleSizeSelect(size.id)}
+                      className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                        selectedSize === size.id
+                          ? 'border-orange-500 bg-orange-50 text-orange-700'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-lg font-semibold">{size.name}</div>
+                        <div className="text-sm">
+                          {size.price > 0 ? `+${formatPrice(size.price)}` : 'Miễn phí'}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Toppings Selection */}
+              <div>
+                <h4 className="text-xl font-bold text-gray-800 mb-4">Topping (tùy chọn)</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  {toppings.map((topping) => (
+                    <button
+                      key={topping.id}
+                      onClick={() => handleToppingToggle(topping.id)}
+                      className={`p-3 rounded-xl border-2 transition-all duration-300 ${
+                        selectedToppings.includes(topping.id)
+                          ? 'border-orange-500 bg-orange-50 text-orange-700'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold">{topping.name}</span>
+                        <span className="text-sm">
+                          {topping.price > 0 ? `+${formatPrice(topping.price)}` : 'Miễn phí'}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quantity */}
+              <div>
+                <h4 className="text-xl font-bold text-gray-800 mb-4">Số lượng</h4>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center text-xl font-bold hover:bg-orange-600 transition-colors"
+                  >
+                    <i className="fas fa-minus"></i>
+                  </button>
+                  <span className="text-2xl font-bold text-gray-800 px-4">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center text-xl font-bold hover:bg-orange-600 transition-colors"
+                  >
+                    <i className="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <h4 className="text-xl font-bold text-gray-800 mb-4">Ghi chú đặc biệt</h4>
+                <textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Ví dụ: Ít đường, thêm đá..."
+                  className="w-full p-4 border-2 border-gray-200 rounded-xl text-lg focus:border-orange-500 focus:outline-none resize-none"
+                  rows={3}
+                />
+              </div>
+
+              {/* Total Price */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-xl font-semibold text-gray-800">Tổng cộng:</span>
+                  <span 
+                    key={calculateTotalPrice()}
+                    className="text-3xl font-bold text-orange-600 transition-all duration-300"
+                  >
+                    {formatPrice(calculateTotalPrice())}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-4">
+                <button
+                  onClick={onClose}
+                  className="flex-1 bg-gray-500 text-white py-4 rounded-xl text-xl font-bold hover:bg-gray-600 transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-xl text-xl font-bold hover:scale-105 transition-transform shadow-lg"
+                >
+                  Thêm vào giỏ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetailModal;

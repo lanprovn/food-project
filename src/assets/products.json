@@ -10,7 +10,19 @@
       "image": "/src/assets/img/gallery/americano-nong.webp",
       "description": "Cà phê Americano nóng thơm ngon, đậm đà hương vị truyền thống.",
       "stock": 50,
-      "isPopular": true
+      "isPopular": true,
+      "tags": ["hot", "popular", "premium"],
+      "sizes": [
+        { "name": "Nhỏ", "extraPrice": 0 },
+        { "name": "Vừa", "extraPrice": 5000 },
+        { "name": "Lớn", "extraPrice": 10000 }
+      ],
+      "toppings": [
+        { "name": "Thêm đường", "extraPrice": 0 },
+        { "name": "Thêm sữa", "extraPrice": 3000 },
+        { "name": "Kem tươi", "extraPrice": 5000 },
+        { "name": "Caramel", "extraPrice": 8000 }
+      ]
     },
     {
       "id": 2,
@@ -22,7 +34,19 @@
       "image": "/src/assets/img/gallery/americano.webp",
       "description": "Cà phê Americano đá mát lạnh, giải nhiệt ngày hè.",
       "stock": 45,
-      "isPopular": false
+      "isPopular": false,
+      "tags": ["cold"],
+      "sizes": [
+        { "name": "Nhỏ", "extraPrice": 0 },
+        { "name": "Vừa", "extraPrice": 5000 },
+        { "name": "Lớn", "extraPrice": 10000 }
+      ],
+      "toppings": [
+        { "name": "Thêm đường", "extraPrice": 0 },
+        { "name": "Thêm sữa", "extraPrice": 3000 },
+        { "name": "Kem tươi", "extraPrice": 5000 },
+        { "name": "Caramel", "extraPrice": 8000 }
+      ]
     },
     {
       "id": 3,
@@ -34,7 +58,8 @@
       "image": "/src/assets/img/gallery/bac-xiu-nong.webp",
       "description": "Bạc xỉu nóng với sữa đặc và cà phê đậm đà.",
       "stock": 40,
-      "isPopular": true
+      "isPopular": true,
+      "tags": ["hot", "sweet", "popular"]
     },
     {
       "id": 4,
@@ -166,7 +191,18 @@
       "image": "/src/assets/img/gallery/burger.png",
       "description": "Burger thịt bò nướng thơm ngon với rau tươi và sốt đặc biệt.",
       "stock": 30,
-      "isPopular": true
+      "isPopular": true,
+      "sizes": [
+        { "name": "Nhỏ", "extraPrice": 0 },
+        { "name": "Vừa", "extraPrice": 15000 },
+        { "name": "Lớn", "extraPrice": 25000 }
+      ],
+      "toppings": [
+        { "name": "Thêm phô mai", "extraPrice": 10000 },
+        { "name": "Thêm thịt xông khói", "extraPrice": 15000 },
+        { "name": "Thêm rau tươi", "extraPrice": 5000 },
+        { "name": "Sốt đặc biệt", "extraPrice": 8000 }
+      ]
     },
     {
       "id": 15,
@@ -454,7 +490,18 @@
       "image": "/src/assets/img/gallery/pizza.png",
       "description": "Pizza margherita với phô mai mozzarella và cà chua tươi.",
       "stock": 25,
-      "isPopular": true
+      "isPopular": true,
+      "sizes": [
+        { "name": "Nhỏ (6 inch)", "extraPrice": 0 },
+        { "name": "Vừa (9 inch)", "extraPrice": 30000 },
+        { "name": "Lớn (12 inch)", "extraPrice": 60000 }
+      ],
+      "toppings": [
+        { "name": "Thêm phô mai mozzarella", "extraPrice": 15000 },
+        { "name": "Thêm pepperoni", "extraPrice": 20000 },
+        { "name": "Thêm nấm", "extraPrice": 10000 },
+        { "name": "Thêm ô liu", "extraPrice": 8000 }
+      ]
     },
     {
       "id": 39,

@@ -11,6 +11,46 @@
   --font-family-inter: 'Inter', sans-serif;
 }
 
+/* POS Kiosk Styles */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Touch-friendly interactions */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Smooth animations for POS */
+.pos-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Large text for readability */
+.pos-text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.pos-text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.pos-text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.pos-text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
 @layer base {
   * {
     margin: 0;

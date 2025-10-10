@@ -1,31 +1,11 @@
 import React from 'react';
-import type { Product } from '../../types/product';
-import ProductGrid from '../product/ProductGrid';
-import SectionTitle from '../shared/SectionTitle';
 
-interface PopularItemsProps {
-  products: Product[];
-  className?: string;
-}
-
-const PopularItems: React.FC<PopularItemsProps> = ({
-  products,
-  className = '',
-}) => {
+const PopularItems: React.FC = () => {
   return (
-    <section className={`py-16 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4">
-        <SectionTitle
-          title="Món ăn phổ biến"
-          centered
-          className="mb-12"
-        />
-        <ProductGrid
-          products={products}
-          columns={5}
-        />
-      </div>
-    </section>
+    <div>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Popular Items</h2>
+      <p className="text-gray-600">Component đang được phát triển</p>
+    </div>
   );
 };
 

@@ -41,7 +41,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-sm backdrop-blur-sm">
+    <nav className="hidden">
       <div className="flex items-center justify-between flex-nowrap max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-auto whitespace-nowrap h-16 md:h-20 scrollbar-hide">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">

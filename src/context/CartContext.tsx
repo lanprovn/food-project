@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { CartContextType, CartItem } from '../types/cart';
-import type { Product } from '../types/product';
 import toast from 'react-hot-toast';
+import { v4 as uuidv4 } from 'uuid';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -31,51 +31,61 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     localStorage.setItem('foodwagon_cart', JSON.stringify(items));
   }, [items]);
 
-  const addItem = (product: Product, quantity: number = 1) => {
+  const addToCart = (item: Omit<CartItem, 'id'>) => {
     setItems(prevItems => {
-      const existingItem = prevItems.find(item => item.product.id === product.id);
+      const existing = prevItems.find(
+        (i) =>
+          i.productId === item.productId &&
+          i.selectedSize?.name === item.selectedSize?.name &&
+          JSON.stringify(i.selectedToppings) === JSON.stringify(item.selectedToppings)
+      );
       
-      if (existingItem) {
-        // Update quantity if item already exists
-        const updatedItems = prevItems.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+      if (existing) {
+        const updatedItems = prevItems.map((i) =>
+          i === existing
+            ? { 
+                ...i, 
+                quantity: i.quantity + item.quantity, 
+                totalPrice: i.totalPrice + item.totalPrice 
+              }
+            : i
         );
-        toast.success(`Đã cập nhật số lượng ${product.name}!`);
+        toast.success(`Đã cập nhật số lượng ${item.name}!`);
         return updatedItems;
       } else {
-        // Add new item
-        const newItems = [...prevItems, { product, quantity }];
-        toast.success(`Đã thêm ${product.name} vào giỏ hàng!`);
-        return newItems;
+        const newItem = { ...item, id: uuidv4() };
+        toast.success(`Đã thêm ${item.name} vào giỏ hàng!`);
+        return [...prevItems, newItem];
       }
     });
   };
 
-  const removeItem = (productId: number) => {
+  const removeFromCart = (id: string) => {
     setItems(prevItems => {
-      const item = prevItems.find(item => item.product.id === productId);
-      const newItems = prevItems.filter(item => item.product.id !== productId);
+      const item = prevItems.find(item => item.id === id);
+      const newItems = prevItems.filter(item => item.id !== id);
       if (item) {
-        toast.success(`Đã xóa ${item.product.name} khỏi giỏ hàng!`);
+        toast.success(`Đã xóa ${item.name} khỏi giỏ hàng!`);
       }
       return newItems;
     });
   };
 
-  const updateQuantity = (productId: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(productId);
+      removeFromCart(id);
       return;
     }
 
     setItems(prevItems =>
-      prevItems.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity }
-          : item
-      )
+      prevItems.map(item => {
+        if (item.id === id) {
+          const basePrice = item.basePrice + (item.selectedSize?.extraPrice || 0) + 
+            item.selectedToppings.reduce((sum, t) => sum + t.extraPrice, 0);
+          return { ...item, quantity, totalPrice: basePrice * quantity };
+        }
+        return item;
+      })
     );
   };
 
@@ -85,14 +95,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
   const value: CartContextType = {
     items,
     totalItems,
     totalPrice,
-    addItem,
-    removeItem,
+    addToCart,
+    removeFromCart,
     updateQuantity,
     clearCart,
     isCartOpen,

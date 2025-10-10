@@ -16,7 +16,8 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
   const [discountItems, setDiscountItems] = useState<DiscountItem[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'rating' | 'popular'>('popular');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +29,25 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
       
       setProducts(productsData.products);
       setRestaurants(productsData.restaurants as Restaurant[]);
-      setCategories(productsData.categories);
+      
+      // Add icons to categories
+      const categoriesWithIcons = productsData.categories.map((category, index) => ({
+        ...category,
+        icon: [
+          'fas fa-coffee',
+          'fas fa-birthday-cake', 
+          'fas fa-hamburger',
+          'fas fa-utensils',
+          'fas fa-bread-slice',
+          'fas fa-snowflake',
+          'fas fa-drumstick-bite',
+          'fas fa-pizza-slice',
+          'fas fa-fire',
+          'fas fa-bowl-food'
+        ][index] || 'fas fa-th-large'
+      }));
+      
+      setCategories(categoriesWithIcons);
       setDiscountItems(productsData.discountItems);
       setFilteredProducts(productsData.products);
     } catch (error) {
@@ -52,9 +71,20 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
     }
 
     // Filter by category
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'all') {
       filtered = filtered.filter(product =>
         product.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+
+    // Filter by tags
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(product =>
+        product.tags && product.tags.some(tag =>
+          selectedTags.some(selectedTag =>
+            tag.toLowerCase().includes(selectedTag.toLowerCase())
+          )
+        )
       );
     }
 
@@ -83,10 +113,10 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
     loadProducts();
   }, []);
 
-  // Filter products when search query, category, or sort changes
+  // Filter products when search query, category, tags, or sort changes
   useEffect(() => {
     filterProducts();
-  }, [searchQuery, selectedCategory, sortBy, products]);
+  }, [searchQuery, selectedCategory, selectedTags, sortBy, products]);
 
   const value: ProductContextType = {
     products,
@@ -96,10 +126,12 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
     filteredProducts,
     searchQuery,
     selectedCategory,
+    selectedTags,
     sortBy,
     isLoading,
     setSearchQuery,
     setSelectedCategory,
+    setSelectedTags,
     setSortBy,
     filterProducts,
     loadProducts,

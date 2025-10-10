@@ -1,0 +1,274 @@
+import React, { useState, useMemo } from 'react';
+import { useProducts } from '../hooks/useProducts';
+import { useCart } from '../hooks/useCart';
+import ProductDetailModal from '../components/product/ProductDetailModal';
+import TagFilter from '../components/shared/TagFilter';
+import ProductTag from '../components/shared/ProductTag';
+import type { Product } from '../types/product';
+import { formatPrice } from '../utils/formatPrice';
+
+const HomePage: React.FC = () => {
+  const { products, categories, filteredProducts, selectedCategory, selectedTags, setSelectedCategory, setSelectedTags } = useProducts();
+  const { items, totalItems, totalPrice, clearCart } = useCart();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showCart, setShowCart] = useState(false);
+
+  const handleCategoryClick = (categoryName: string) => {
+    setSelectedCategory(categoryName === 'all' ? 'all' : categoryName);
+  };
+
+  // Optimize product display with useMemo
+  const displayedProducts = useMemo(() => {
+    return filteredProducts;
+  }, [filteredProducts]);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+  };
+
+  const handleCheckout = () => {
+    // Redirect to checkout page
+    window.location.href = '/checkout';
+  };
+
+  return (
+    <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-orange-50 to-red-50">
+      {/* POS Header */}
+      <header className="bg-white shadow-lg border-b-4 border-orange-500 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4">
+            <img src="/src/assets/img/gallery/logo.svg" alt="Phở Việt" className="h-16 w-16" />
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">Phở Việt</h1>
+              <p className="text-lg text-gray-600">Hệ thống đặt món tự phục vụ</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-6">
+          <div className="text-right">
+            <div className="text-2xl font-bold text-orange-600">{totalItems} món</div>
+            <div className="text-lg text-gray-600">Tổng: {formatPrice(totalPrice)}</div>
+          </div>
+          <button
+            onClick={handleCheckout}
+            className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-8 py-4 rounded-xl text-xl font-bold hover:scale-105 transition-all duration-200 shadow-lg flex items-center space-x-2"
+          >
+            <i className="fas fa-shopping-cart"></i>
+            <span>Thanh toán ({totalItems})</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Main POS Layout */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Categories Sidebar */}
+        <div className="w-80 bg-white shadow-lg border-r-4 border-orange-200 overflow-y-auto">
+          <div className="p-4">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Danh mục</h2>
+            <div className="space-y-3">
+              <button
+                onClick={() => handleCategoryClick('all')}
+                className={`w-full p-4 rounded-xl text-left transition-all duration-300 ${
+                  selectedCategory === 'all'
+                    ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                }`}
+              >
+                <div className="flex items-center space-x-4">
+                  <i className="fas fa-th-large text-2xl"></i>
+                  <div>
+                    <div className="text-xl font-semibold">Tất cả món</div>
+                    <div className="text-sm opacity-75">
+                      {products.length} món
+                    </div>
+                  </div>
+                </div>
+              </button>
+              
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategoryClick(category.name)}
+                  className={`w-full p-4 rounded-xl text-left transition-all duration-300 ${
+                    selectedCategory === category.name
+                      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg'
+                      : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                  }`}
+                >
+                  <div className="flex items-center space-x-4">
+                    <i className={`${category.icon} text-2xl`}></i>
+                    <div>
+                      <div className="text-xl font-semibold">{category.name}</div>
+                      <div className="text-sm opacity-75">
+                        {products.filter(p => p.category === category.name).length} món
+                      </div>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Products Grid */}
+        <div className="flex-1 p-6 overflow-y-auto">
+          <div className="mb-6">
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+              {selectedCategory === 'all' || !selectedCategory ? 'Tất cả món ăn' : selectedCategory}
+            </h2>
+            <p className="text-lg text-gray-600 mb-4">
+              Hiển thị {displayedProducts.length} món ăn
+            </p>
+            
+            {/* Tag Filter */}
+            <TagFilter 
+              selectedTags={selectedTags}
+              onTagsChange={setSelectedTags}
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {displayedProducts.map((product) => (
+              <div
+                key={product.id}
+                onClick={() => handleProductClick(product)}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 border-2 border-transparent hover:border-orange-300"
+              >
+                <div className="p-4">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-48 object-cover rounded-xl mb-4"
+                  />
+                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                    {product.description}
+                  </p>
+                  
+                  {/* Product Tags */}
+                  {product.tags && product.tags.length > 0 && (
+                    <div className="mb-3">
+                      <ProductTag tags={product.tags} maxDisplay={2} />
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <div className="text-2xl font-bold text-orange-600">
+                      {formatPrice(product.price)}
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <i className="fas fa-star text-yellow-400"></i>
+                      <span className="text-sm font-semibold text-gray-600">
+                        {product.rating}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Quick Add Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProductClick(product);
+                    }}
+                    className="w-full mt-3 bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-xl font-bold hover:scale-105 transition-all duration-200 shadow-md flex items-center justify-center space-x-2"
+                  >
+                    <i className="fas fa-plus"></i>
+                    <span>Chọn món</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Cart Sidebar */}
+        {showCart && (
+          <div className="w-96 bg-white shadow-lg border-l-4 border-orange-200 overflow-y-auto">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Giỏ hàng</h2>
+                <button
+                  onClick={() => setShowCart(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+              
+              {items.length === 0 ? (
+                <div className="text-center py-12">
+                  <i className="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                  <p className="text-lg text-gray-500">Giỏ hàng trống</p>
+                  <p className="text-sm text-gray-400">Chọn món ăn để thêm vào giỏ</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {items.map((item) => (
+                    <div key={item.product.id} className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-lg font-semibold text-gray-800">{item.product.name}</h3>
+                        <button className="text-red-500 hover:text-red-700">
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <button className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center">
+                            <i className="fas fa-minus text-sm"></i>
+                          </button>
+                          <span className="text-lg font-semibold">{item.quantity}</span>
+                          <button className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center">
+                            <i className="fas fa-plus text-sm"></i>
+                          </button>
+                        </div>
+                        <div className="text-lg font-bold text-orange-600">
+                          {formatPrice(item.product.price * item.quantity)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <div className="border-t-2 border-gray-200 pt-4 mt-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-xl font-semibold text-gray-800">Tổng cộng:</span>
+                      <span className="text-2xl font-bold text-orange-600">
+                        {formatPrice(totalPrice)}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <button
+                        onClick={handleCheckout}
+                        className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-4 rounded-xl text-xl font-bold hover:scale-105 transition-transform shadow-lg"
+                      >
+                        Thanh toán
+                      </button>
+                      <button
+                        onClick={clearCart}
+                        className="w-full bg-gray-500 text-white py-3 rounded-xl text-lg font-semibold hover:bg-gray-600 transition-colors"
+                      >
+                        Xóa giỏ hàng
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default HomePage;

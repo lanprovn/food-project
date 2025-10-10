@@ -1,3 +1,13 @@
+export interface Size {
+  name: string;
+  extraPrice: number;
+}
+
+export interface Topping {
+  name: string;
+  extraPrice: number;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -11,6 +21,9 @@ export interface Product {
   isAvailable?: boolean;
   stock?: number;
   isPopular?: boolean;
+  tags?: string[];
+  sizes?: Size[];
+  toppings?: Topping[];
 }
 
 export interface Restaurant {
@@ -29,6 +42,7 @@ export interface Category {
   image: string;
   description?: string;
   productCount?: number;
+  icon?: string;
 }
 
 export interface DiscountItem {
@@ -47,10 +61,12 @@ export interface ProductContextType {
   filteredProducts: Product[];
   searchQuery: string;
   selectedCategory: string;
+  selectedTags: string[];
   sortBy: 'name' | 'price' | 'rating' | 'popular';
   isLoading: boolean;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string) => void;
+  setSelectedTags: (tags: string[]) => void;
   setSortBy: (sortBy: 'name' | 'price' | 'rating' | 'popular') => void;
   filterProducts: () => void;
   loadProducts: () => Promise<void>;

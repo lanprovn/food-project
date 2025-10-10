@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-neutral-900 text-gray-300">
+    <footer className="hidden">
       <div className="max-w-7xl mx-auto px-4">
         {/* Top Cities */}
         <div className="py-10 border-b border-gray-700">
