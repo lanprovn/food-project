@@ -3,7 +3,7 @@
   "description": "Modern Point of Sale (POS) system for Vietnamese cafes and restaurants",
   "version": "1.0.0",
   "type": "module",
-  "author": "Ocha Việt Team",
+  "author": "Lan Pro <lanprovn@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/lanprovn/food-project",
   "repository": {

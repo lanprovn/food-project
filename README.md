@@ -220,7 +220,7 @@ Dự án này được phân phối dưới giấy phép MIT. Xem file `LICENSE`
 
 ## 👥 Tác giả
 
-- **Ocha Việt Team** - *Initial work* - [GitHub](https://github.com/ocha-viet)
+- **Lan Pro** - *Creator & Developer* - [GitHub](https://github.com/lanprovn)
 
 ## 🙏 Lời cảm ơn
 
@@ -231,13 +231,13 @@ Dự án này được phân phối dưới giấy phép MIT. Xem file `LICENSE`
 
 ## 📞 Liên hệ
 
-- **Email**: contact@ochaviet.com
-- **Website**: https://ochaviet.com
-- **GitHub**: https://github.com/ocha-viet/pos-system
+- **Email**: lanprovn@gmail.com
+- **GitHub**: https://github.com/lanprovn
+- **Project**: https://github.com/lanprovn/food-project
 
 ---
 
 <div align="center">
-  <p>Được tạo với ❤️ bởi Ocha Việt Team</p>
+  <p>Được tạo với ❤️ bởi Lan Pro</p>
   <p>© 2024 Ocha Việt POS. All rights reserved.</p>
 </div>
