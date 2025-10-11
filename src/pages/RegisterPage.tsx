@@ -15,14 +15,14 @@ const RegisterPage: React.FC = () => {
         <div className="text-center">
           <img 
             src="/src/assets/img/gallery/logo.svg" 
-            alt="Foodwagon Logo" 
+            alt="Ocha Việt Logo" 
             className="mx-auto h-12 w-12"
           />
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+          <h2 className="mt-6 text-2xl font-bold text-gray-900">
             Tạo tài khoản của bạn
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Tham gia Phở Việt và bắt đầu đặt những món ăn ngon!
+            Tham gia Ocha Việt và bắt đầu đặt những món ăn ngon!
           </p>
         </div>
       </div>

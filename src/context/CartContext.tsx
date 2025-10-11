@@ -1,10 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { CartContextType, CartItem } from '../types/cart';
+import { CartContext } from './CartContext';
 import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
-
-const CartContext = createContext<CartContextType | undefined>(undefined);
 
 interface CartProviderProps {
   children: ReactNode;
@@ -50,11 +49,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
               }
             : i
         );
-        toast.success(`Đã cập nhật số lượng ${item.name}!`);
+        // Move toast outside of setState callback
+        setTimeout(() => toast.success(`Đã cập nhật số lượng ${item.name}!`), 0);
         return updatedItems;
       } else {
         const newItem = { ...item, id: uuidv4() };
-        toast.success(`Đã thêm ${item.name} vào giỏ hàng!`);
+        // Move toast outside of setState callback
+        setTimeout(() => toast.success(`Đã thêm ${item.name} vào giỏ hàng!`), 0);
         return [...prevItems, newItem];
       }
     });
@@ -65,7 +66,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       const item = prevItems.find(item => item.id === id);
       const newItems = prevItems.filter(item => item.id !== id);
       if (item) {
-        toast.success(`Đã xóa ${item.name} khỏi giỏ hàng!`);
+        // Move toast outside of setState callback
+        setTimeout(() => toast.success(`Đã xóa ${item.name} khỏi giỏ hàng!`), 0);
       }
       return newItems;
     });
@@ -91,7 +93,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const clearCart = () => {
     setItems([]);
-    toast.success('Đã xóa tất cả giỏ hàng!');
+    // Move toast outside of setState callback
+    setTimeout(() => toast.success('Đã xóa tất cả giỏ hàng!'), 0);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -116,10 +119,3 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   );
 };
 
-export const useCart = (): CartContextType => {
-  const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-};

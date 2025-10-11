@@ -4,7 +4,31 @@ import ButtonFilled from '../components/shared/ButtonFilled';
 const TrackingPage: React.FC = () => {
   const [orderId, setOrderId] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [trackingResult, setTrackingResult] = useState<any>(null);
+  const [trackingResult, setTrackingResult] = useState<{
+    id: string;
+    status: string;
+    estimatedDelivery: string;
+    currentLocation: string;
+    trackingHistory: Array<{
+      status: string;
+      timestamp: string;
+      location: string;
+    }>;
+    items: Array<{
+      name: string;
+      quantity: number;
+      price: number;
+    }>;
+    total: number;
+    orderTime?: string;
+    address?: string;
+    estimatedTime?: string;
+    driver?: {
+      name: string;
+      phone: string;
+      avatar: string;
+    };
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTrackOrder = async (e: React.FormEvent) => {
@@ -20,6 +44,12 @@ const TrackingPage: React.FC = () => {
         id: orderId,
         status: 'delivering',
         estimatedTime: '15 phút',
+        currentLocation: 'Đang giao hàng',
+        trackingHistory: [
+          { status: 'preparing', timestamp: '14:30', location: 'Nhà hàng' },
+          { status: 'ready', timestamp: '14:45', location: 'Nhà hàng' },
+          { status: 'delivering', timestamp: '15:00', location: 'Đang giao hàng' }
+        ],
         driver: {
           name: 'Nguyễn Văn A',
           phone: '0901234567',
@@ -196,7 +226,7 @@ const TrackingPage: React.FC = () => {
                   <div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-4">Chi tiết đơn hàng</h4>
                     <div className="space-y-3">
-                      {trackingResult.items.map((item: any, index: number) => (
+                      {trackingResult.items.map((item, index: number) => (
                         <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100">
                           <div>
                             <p className="font-medium text-gray-900">{item.name}</p>

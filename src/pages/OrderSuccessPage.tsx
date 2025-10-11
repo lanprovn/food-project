@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
 const OrderSuccessPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,50 +13,27 @@ const OrderSuccessPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-        {/* Success Icon */}
-        <div className="mb-6">
-          <CheckCircleIcon className="h-20 w-20 text-green-500 mx-auto animate-bounce" />
-        </div>
-
-        {/* Success Message */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">
-            Đơn hàng đã được ghi nhận!
-          </h1>
-          <p className="text-gray-600 text-lg">
-            Cảm ơn bạn đã sử dụng dịch vụ của Ocha Việt. 
-            Đơn hàng của bạn đang được chuẩn bị.
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-4">
-          <button
-            onClick={handleNewOrder}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
-          >
-            Tạo đơn mới
-          </button>
-          
-          <button
-            onClick={handleGoHome}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-          >
-            Về trang chủ
-          </button>
-        </div>
-
-        {/* Additional Info */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <p className="text-sm text-gray-500">
-            Thời gian chuẩn bị: 15-20 phút
-          </p>
-          <p className="text-sm text-gray-500 mt-1">
-            Mã đơn hàng: #{Math.random().toString(36).substr(2, 9).toUpperCase()}
-          </p>
-        </div>
+    <div className="flex flex-col items-center justify-center h-screen w-full bg-green-50 text-gray-800 text-center px-4">
+      <div className="bg-green-500 rounded-full p-4 mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h1 className="text-2xl font-bold mb-2">Đơn hàng đã được ghi nhận!</h1>
+      <p className="mb-6">Cảm ơn bạn đã sử dụng dịch vụ của Ocha Việt.<br/>Đơn hàng của bạn đang được chuẩn bị.</p>
+      <div className="flex gap-3">
+        <button 
+          onClick={handleNewOrder}
+          className="bg-orange-500 text-white px-5 py-2 rounded hover:bg-orange-600 transition"
+        >
+          Tạo đơn mới
+        </button>
+        <button 
+          onClick={handleGoHome}
+          className="border border-gray-300 text-gray-700 px-5 py-2 rounded hover:bg-gray-100 transition"
+        >
+          Về trang chủ
+        </button>
       </div>
     </div>
   );

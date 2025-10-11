@@ -1,9 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { ProductContextType, Product, Restaurant, Category, DiscountItem } from '../types/product';
+import { ProductContext } from './ProductContext';
 import productsData from '../assets/products.json';
-
-const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 interface ProductProviderProps {
   children: ReactNode;
@@ -57,7 +56,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
     }
   };
 
-  const filterProducts = () => {
+  const filterProducts = useCallback(() => {
     let filtered = [...products];
 
     // Filter by search query
@@ -106,7 +105,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
     });
 
     setFilteredProducts(filtered);
-  };
+  }, [products, searchQuery, selectedCategory, selectedTags, sortBy]);
 
   // Load products on mount
   useEffect(() => {
@@ -116,7 +115,7 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
   // Filter products when search query, category, tags, or sort changes
   useEffect(() => {
     filterProducts();
-  }, [searchQuery, selectedCategory, selectedTags, sortBy, products]);
+  }, [searchQuery, selectedCategory, selectedTags, sortBy, products, filterProducts]);
 
   const value: ProductContextType = {
     products,
@@ -144,10 +143,3 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
   );
 };
 
-export const useProducts = (): ProductContextType => {
-  const context = useContext(ProductContext);
-  if (context === undefined) {
-    throw new Error('useProducts must be used within a ProductProvider');
-  }
-  return context;
-};

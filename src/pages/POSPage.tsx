@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import SidebarCategory from '../components/pos/SidebarCategory';
 import ProductGrid from '../components/pos/ProductGrid';
-import CartPanel from '../components/pos/CartPanel';
 import { useProducts } from '../hooks/useProducts';
-import { useCart } from '../context/CartContext';
 
 const POSPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { categories, filteredProducts, setSelectedCategory } = useProducts();
-  const { totalItems } = useCart();
+  const { filteredProducts, setSelectedCategory, isLoading } = useProducts();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
 
   useEffect(() => {
@@ -22,39 +16,41 @@ const POSPage: React.FC = () => {
     setSelectedCategoryId(categoryName);
   };
 
-  const handleCheckout = () => {
-    if (totalItems > 0) {
-      navigate('/checkout');
-    }
-  };
-
   return (
-    <div className="flex h-screen overflow-hidden bg-[#fff8f5]">
-      {/* Sidebar Categories */}
-      <SidebarCategory 
-        categories={categories}
-        selectedCategory={selectedCategoryId}
-        onCategorySelect={handleCategorySelect}
-      />
-      
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Ocha Việt POS - Hệ thống Order
-            </h1>
-            <p className="text-gray-600">
-              Chọn món ăn và thức uống từ menu bên dưới
-            </p>
-          </div>
-          
-          <ProductGrid products={filteredProducts} />
+    <div className="w-full">
+      {/* Mobile Category Filter */}
+      <div className="lg:hidden mb-6">
+        <div className="flex overflow-x-auto pb-2">
+          <button
+            onClick={() => handleCategorySelect('all')}
+            className={`flex-shrink-0 px-4 py-2 rounded-full mr-2 transition-all duration-300 ${
+              selectedCategoryId === 'all'
+                ? 'bg-orange-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Tất cả
+          </button>
         </div>
-      </main>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          Hệ thống Order
+        </h2>
+        <p className="text-lg text-gray-600">
+          Chọn món ăn và thức uống từ menu bên dưới
+        </p>
+      </div>
       
-      {/* Cart Panel */}
-      <CartPanel onCheckout={handleCheckout} />
+      {isLoading ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Đang tải sản phẩm...</p>
+        </div>
+      ) : (
+        <ProductGrid products={filteredProducts} />
+      )}
     </div>
   );
 };

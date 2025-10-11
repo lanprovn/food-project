@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { AuthContextType, User } from '../types/auth';
+import { AuthContext } from './AuthContext';
+import { validateEmail, validatePassword, validateName, sanitizeInput } from '../utils/validation';
 import toast from 'react-hot-toast';
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -30,6 +30,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true);
     
     try {
+      // Validate inputs
+      const emailValidation = validateEmail(sanitizeInput(email));
+      const passwordValidation = validatePassword(password);
+      
+      if (!emailValidation.isValid) {
+        toast.error(emailValidation.error || 'Email không hợp lệ');
+        return false;
+      }
+      
+      if (!passwordValidation.isValid) {
+        toast.error(passwordValidation.error || 'Mật khẩu không hợp lệ');
+        return false;
+      }
+      
       // Mock login - in real app, this would be an API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -51,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         toast.error('Email hoặc mật khẩu không hợp lệ');
         return false;
       }
-    } catch (error) {
+    } catch {
       toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
       return false;
     } finally {
@@ -63,6 +77,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true);
     
     try {
+      // Validate inputs
+      const emailValidation = validateEmail(sanitizeInput(email));
+      const passwordValidation = validatePassword(password);
+      const nameValidation = validateName(sanitizeInput(name));
+      
+      if (!emailValidation.isValid) {
+        toast.error(emailValidation.error || 'Email không hợp lệ');
+        return false;
+      }
+      
+      if (!passwordValidation.isValid) {
+        toast.error(passwordValidation.error || 'Mật khẩu không hợp lệ');
+        return false;
+      }
+      
+      if (!nameValidation.isValid) {
+        toast.error(nameValidation.error || 'Tên không hợp lệ');
+        return false;
+      }
+      
       // Mock registration - in real app, this would be an API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -84,7 +118,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         toast.error('Vui lòng điền đầy đủ thông tin');
         return false;
       }
-    } catch (error) {
+    } catch {
       toast.error('Đăng ký thất bại. Vui lòng thử lại.');
       return false;
     } finally {
@@ -114,10 +148,3 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};

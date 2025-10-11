@@ -1,10 +1,13 @@
 import AppRouter from './router/AppRouter';
+import ErrorBoundary from './components/shared/ErrorBoundary';
 
 function App() {
   return (
-    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-orange-50 to-red-50">
-      <AppRouter />
-    </div>
+    <ErrorBoundary>
+      <div className="flex flex-col h-screen w-full overflow-hidden bg-gray-50">
+        <AppRouter />
+      </div>
+    </ErrorBoundary>
   );
 }
 

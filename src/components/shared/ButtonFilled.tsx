@@ -1,15 +1,38 @@
 import React from 'react';
 
+/**
+ * Props interface for ButtonFilled component
+ */
 interface ButtonFilledProps {
+  /** Content to display inside the button */
   children: React.ReactNode;
+  /** Click handler function */
   onClick?: () => void;
+  /** HTML button type */
   type?: 'button' | 'submit' | 'reset';
+  /** Visual variant of the button */
   variant?: 'primary' | 'secondary' | 'danger';
+  /** Size of the button */
   size?: 'sm' | 'md' | 'lg';
+  /** Whether the button is disabled */
   disabled?: boolean;
+  /** Additional CSS classes */
   className?: string;
 }
 
+/**
+ * A reusable filled button component with multiple variants and sizes
+ * 
+ * @param props - ButtonFilledProps
+ * @returns JSX.Element
+ * 
+ * @example
+ * ```tsx
+ * <ButtonFilled variant="primary" size="md" onClick={handleClick}>
+ *   Click me
+ * </ButtonFilled>
+ * ```
+ */
 const ButtonFilled: React.FC<ButtonFilledProps> = ({
   children,
   onClick,
@@ -19,18 +42,18 @@ const ButtonFilled: React.FC<ButtonFilledProps> = ({
   disabled = false,
   className = '',
 }) => {
-  const baseClasses = 'font-semibold rounded-lg transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseClasses = 'pos-btn';
   
   const variantClasses = {
-    primary: 'bg-primary hover:bg-red-600 text-white focus:ring-primary',
-    secondary: 'bg-secondary hover:bg-yellow-500 text-white focus:ring-secondary',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-600',
+    primary: 'pos-btn-primary',
+    secondary: 'pos-btn-secondary',
+    danger: 'pos-btn-danger',
   };
   
   const sizeClasses = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
+    sm: 'pos-btn-sm',
+    md: 'pos-btn-md',
+    lg: 'pos-btn-lg',
   };
   
   const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';

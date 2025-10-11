@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import type { Product } from '../../types/product';
 import { StarIcon } from '@heroicons/react/24/solid';
 
@@ -7,18 +7,18 @@ interface ProductCardProps {
   onClick: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  const formatPrice = (price: number) => {
+const ProductCard: React.FC<ProductCardProps> = memo(({ product, onClick }) => {
+  const formatPrice = useCallback((price: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND'
     }).format(price);
-  };
+  }, []);
 
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:scale-105 border border-gray-100 overflow-hidden"
+      className="pos-card-interactive pos-touch-target"
     >
       {/* Product Image */}
       <div className="relative h-48 overflow-hidden">
@@ -34,14 +34,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         
         {/* Popular Badge */}
         {product.isPopular && (
-          <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-3 left-3 pos-badge-primary">
             Phổ biến
           </div>
         )}
         
         {/* Stock Badge */}
         {product.stock && product.stock < 10 && (
-          <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-3 right-3 pos-badge-danger">
             Sắp hết
           </div>
         )}
@@ -49,34 +49,34 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
       {/* Product Info */}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-800 text-lg mb-2 line-clamp-2">
+        <h3 className="font-semibold text-gray-800 pos-body-lg mb-2 pos-line-clamp-2">
           {product.name}
         </h3>
         
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="text-gray-600 pos-body-sm mb-3 pos-line-clamp-2">
           {product.description}
         </p>
 
         {/* Rating */}
         <div className="flex items-center mb-3">
           <StarIcon className="h-4 w-4 text-yellow-400 mr-1" />
-          <span className="text-sm text-gray-600 font-medium">
+          <span className="pos-body-sm text-gray-600 font-medium">
             {product.rating}
           </span>
-          <span className="text-xs text-gray-500 ml-1">
+          <span className="pos-caption text-gray-500 ml-1">
             ({product.restaurant})
           </span>
         </div>
 
         {/* Price */}
         <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-orange-600">
+          <span className="pos-heading-3 text-primary">
             {formatPrice(product.price)}
           </span>
           
           {/* Size Options Indicator */}
           {product.sizes && product.sizes.length > 0 && (
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+            <span className="pos-badge-gray">
               {product.sizes.length} size
             </span>
           )}
@@ -85,7 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         {/* Topping Options Indicator */}
         {product.toppings && product.toppings.length > 0 && (
           <div className="mt-2">
-            <span className="text-xs text-gray-500 bg-blue-100 px-2 py-1 rounded-full">
+            <span className="pos-badge bg-blue-100 text-blue-700">
               {product.toppings.length} topping
             </span>
           </div>
@@ -93,6 +93,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       </div>
     </div>
   );
-};
+});
+
+ProductCard.displayName = 'ProductCard';
 
 export default ProductCard;

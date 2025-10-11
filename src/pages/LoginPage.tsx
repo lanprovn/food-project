@@ -17,17 +17,17 @@ const LoginPage: React.FC = () => {
         <div className="text-center">
           <img 
             src="/src/assets/img/gallery/logo.svg" 
-            alt="Phở Việt Logo" 
+            alt="Ocha Việt Logo" 
             className="mx-auto h-12 w-12"
           />
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+          <h2 className="mt-6 text-2xl font-bold text-gray-900">
             {isLogin ? 'Đăng nhập vào tài khoản' : 'Tạo tài khoản mới'}
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             {isLogin ? "Chưa có tài khoản?" : "Đã có tài khoản?"}
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="ml-1 text-primary hover:underline font-medium"
+              className="ml-1 text-orange-500 hover:underline font-medium"
             >
               {isLogin ? 'Đăng ký tại đây' : 'Đăng nhập tại đây'}
             </button>

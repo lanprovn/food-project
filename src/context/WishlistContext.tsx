@@ -1,24 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { Product } from '../types/product';
+import type { WishlistContextType, WishlistItem } from '../types/wishlist';
+import { WishlistContext } from './WishlistContext';
 import toast from 'react-hot-toast';
-
-interface WishlistContextType {
-  items: Product[];
-  addItem: (product: Product) => void;
-  removeItem: (productId: number) => void;
-  isInWishlist: (productId: number) => boolean;
-  clearWishlist: () => void;
-}
-
-const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 interface WishlistProviderProps {
   children: ReactNode;
 }
 
 export const WishlistProvider: React.FC<WishlistProviderProps> = ({ children }) => {
-  const [items, setItems] = useState<Product[]>([]);
+  const [items, setItems] = useState<WishlistItem[]>([]);
 
   // Load wishlist from localStorage on mount
   useEffect(() => {
@@ -37,34 +29,39 @@ export const WishlistProvider: React.FC<WishlistProviderProps> = ({ children }) 
     localStorage.setItem('foodwagon_wishlist', JSON.stringify(items));
   }, [items]);
 
-  const addItem = (product: Product) => {
+  const addToWishlist = (product: Product) => {
     setItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id);
+      const existingItem = prevItems.find(item => item.product.id === product.id);
       
       if (existingItem) {
         toast.error(`${product.name} đã có trong danh sách yêu thích!`);
         return prevItems;
       } else {
-        const newItems = [...prevItems, product];
+        const wishlistItem: WishlistItem = {
+          id: Date.now(),
+          product,
+          addedAt: new Date().toISOString()
+        };
+        const newItems = [...prevItems, wishlistItem];
         toast.success(`Đã thêm ${product.name} vào danh sách yêu thích!`);
         return newItems;
       }
     });
   };
 
-  const removeItem = (productId: number) => {
+  const removeFromWishlist = (productId: number) => {
     setItems(prevItems => {
-      const item = prevItems.find(item => item.id === productId);
-      const newItems = prevItems.filter(item => item.id !== productId);
+      const item = prevItems.find(item => item.product.id === productId);
+      const newItems = prevItems.filter(item => item.product.id !== productId);
       if (item) {
-        toast.success(`Đã xóa ${item.name} khỏi danh sách yêu thích!`);
+        toast.success(`Đã xóa ${item.product.name} khỏi danh sách yêu thích!`);
       }
       return newItems;
     });
   };
 
   const isInWishlist = (productId: number): boolean => {
-    return items.some(item => item.id === productId);
+    return items.some(item => item.product.id === productId);
   };
 
   const clearWishlist = () => {
@@ -74,8 +71,8 @@ export const WishlistProvider: React.FC<WishlistProviderProps> = ({ children }) 
 
   const value: WishlistContextType = {
     items,
-    addItem,
-    removeItem,
+    addToWishlist,
+    removeFromWishlist,
     isInWishlist,
     clearWishlist,
   };
@@ -87,10 +84,3 @@ export const WishlistProvider: React.FC<WishlistProviderProps> = ({ children }) 
   );
 };
 
-export const useWishlist = (): WishlistContextType => {
-  const context = useContext(WishlistContext);
-  if (context === undefined) {
-    throw new Error('useWishlist must be used within a WishlistProvider');
-  }
-  return context;
-};
