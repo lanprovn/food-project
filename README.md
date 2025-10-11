@@ -163,16 +163,132 @@ export default {
 
 ## 🧪 Testing
 
+Dự án sử dụng **Vitest** và **React Testing Library** để đảm bảo chất lượng code và tính ổn định của ứng dụng.
+
+### Chạy Tests
+
 ```bash
-# Chạy tests
+# Chạy tất cả tests
 npm run test
 
-# Chạy tests với coverage
+# Chạy tests với UI
+npm run test:ui
+
+# Chạy tests với coverage report
 npm run test:coverage
 
 # Chạy tests trong watch mode
 npm run test:watch
 ```
+
+### Test Coverage
+
+Dự án có test coverage cho:
+
+- ✅ **Components**: POSPage, CheckoutPage, OrderSuccessPage
+- ✅ **Hooks**: useCart, useProducts, useAppLogger
+- ✅ **Context**: AuthContext, CartContext
+- ✅ **Utilities**: formatPrice, validation functions
+
+### Test Structure
+
+```
+src/
+├── components/__tests__/     # Component tests
+├── context/__tests__/        # Context tests
+├── hooks/__tests__/          # Hook tests
+├── pages/__tests__/          # Page tests
+└── test/                     # Test setup and utilities
+    └── setup.ts             # Test configuration
+```
+
+### Viết Tests Mới
+
+```typescript
+// Example: Component test
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import MyComponent from '../MyComponent';
+
+describe('MyComponent', () => {
+  it('renders correctly', () => {
+    render(<MyComponent />);
+    expect(screen.getByText('Expected Text')).toBeInTheDocument();
+  });
+
+  it('handles user interaction', () => {
+    const mockHandler = vi.fn();
+    render(<MyComponent onClick={mockHandler} />);
+    
+    fireEvent.click(screen.getByRole('button'));
+    expect(mockHandler).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+## 📊 Monitoring & Analytics
+
+Dự án tích hợp hệ thống monitoring và analytics để theo dõi hiệu suất và lỗi trong production.
+
+### Logging System
+
+```typescript
+import { useAppLogger } from './hooks/useAppLogger';
+
+const MyComponent = () => {
+  const logger = useAppLogger();
+
+  const handleError = (error: Error) => {
+    logger.trackError(error, { component: 'MyComponent' });
+  };
+
+  const handleUserAction = () => {
+    logger.trackUserAction('button_click', { buttonId: 'submit' });
+  };
+
+  return <div>...</div>;
+};
+```
+
+### Error Tracking
+
+- **Sentry Integration**: Sẵn sàng tích hợp Sentry cho production
+- **Console Logging**: Fallback logging cho development
+- **Error Boundaries**: React error boundary để catch errors
+- **Performance Tracking**: Theo dõi thời gian thực thi operations
+
+### Analytics Events
+
+```typescript
+// Track user interactions
+logger.trackUserAction('product_added', { productId: '123' });
+
+// Track page views
+logger.trackPageView('checkout', { step: 'payment' });
+
+// Track POS events
+logger.trackPOSEvent('order_completed', { totalAmount: 50000 });
+
+// Track cart operations
+logger.trackCartOperation('add', { productId: '123', quantity: 2 });
+```
+
+### Environment Configuration
+
+```env
+# .env.local
+VITE_SENTRY_DSN=your_sentry_dsn_here
+VITE_SENTRY_ENABLED=true
+NODE_ENV=production
+```
+
+### Monitoring Features
+
+- 🔍 **Error Tracking**: Tự động capture và report errors
+- 📈 **Performance Monitoring**: Theo dõi thời gian load và render
+- 👤 **User Analytics**: Track user behavior và interactions
+- 🛒 **Business Metrics**: Monitor POS operations và sales
+- 📱 **Session Tracking**: Theo dõi user sessions và engagement
 
 ## 📦 Build và Deploy
 

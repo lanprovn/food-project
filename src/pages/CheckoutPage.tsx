@@ -3,18 +3,46 @@ import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Customer information interface
+ */
+interface CustomerInfo {
+  name: string;
+  phone: string;
+  table: string;
+  notes: string;
+}
+
+/**
+ * Payment method type
+ */
+type PaymentMethod = 'cash' | 'card' | 'qr';
+
+/**
+ * CheckoutPage Component
+ * Handles the checkout process including customer information and payment
+ * Features:
+ * - Order summary display
+ * - Customer information form
+ * - Payment method selection
+ * - Order completion and navigation
+ */
 const CheckoutPage: React.FC = () => {
   const { items, totalPrice, clearCart } = useCart();
   const navigate = useNavigate();
-  const [customerInfo, setCustomerInfo] = useState({
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     name: '',
     phone: '',
     table: '',
     notes: ''
   });
-  const [paymentMethod, setPaymentMethod] = useState('cash');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  /**
+   * Handle input changes for customer information form
+   * @param e - Input change event
+   */
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
     setCustomerInfo(prev => ({
       ...prev,
@@ -22,19 +50,27 @@ const CheckoutPage: React.FC = () => {
     }));
   };
 
-  const handlePaymentMethodChange = (method: string) => {
+  /**
+   * Handle payment method selection
+   * @param method - Selected payment method
+   */
+  const handlePaymentMethodChange = (method: PaymentMethod): void => {
     setPaymentMethod(method);
   };
 
-  const handleCompleteOrder = () => {
+  /**
+   * Handle order completion
+   * Processes payment and navigates to success page
+   */
+  const handleCompleteOrder = (): void => {
     // Mock order completion
-    const paymentMethods = {
+    const paymentMethods: Record<PaymentMethod, string> = {
       'cash': 'Tiền mặt',
       'card': 'Thẻ ngân hàng',
       'qr': 'Quét mã QR'
     };
     
-    alert(`Thanh toán ${paymentMethods[paymentMethod as keyof typeof paymentMethods]} thành công!`);
+    alert(`Thanh toán ${paymentMethods[paymentMethod]} thành công!`);
     clearCart();
     navigate('/order-success');
   };

@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import ProductGrid from '../components/pos/ProductGrid';
 import { useProducts } from '../hooks/useProducts';
 
+/**
+ * POSPage Component
+ * Main Point of Sale interface for product selection and ordering
+ * Features:
+ * - Product grid display with category filtering
+ * - Mobile-responsive category navigation
+ * - Loading states and error handling
+ */
 const POSPage: React.FC = () => {
   const { filteredProducts, setSelectedCategory, isLoading } = useProducts();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
@@ -11,7 +19,11 @@ const POSPage: React.FC = () => {
     setSelectedCategory('all');
   }, [setSelectedCategory]);
 
-  const handleCategorySelect = (categoryName: string) => {
+  /**
+   * Handle category selection for mobile filter
+   * @param categoryName - Name of the selected category
+   */
+  const handleCategorySelect = (categoryName: string): void => {
     setSelectedCategory(categoryName);
     setSelectedCategoryId(categoryName);
   };
@@ -34,6 +46,7 @@ const POSPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Page Header */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
           Hệ thống Order
@@ -43,6 +56,7 @@ const POSPage: React.FC = () => {
         </p>
       </div>
       
+      {/* Product Content */}
       {isLoading ? (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
