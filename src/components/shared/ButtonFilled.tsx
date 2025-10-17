@@ -42,18 +42,18 @@ const ButtonFilled: React.FC<ButtonFilledProps> = ({
   disabled = false,
   className = '',
 }) => {
-  const baseClasses = 'pos-btn';
+  const baseClasses = 'font-semibold rounded-lg transition-all duration-300 outline-none focus:outline-none focus:ring-2 focus:ring-[#ff5a3c] focus:ring-offset-2';
   
   const variantClasses = {
-    primary: 'pos-btn-primary',
-    secondary: 'pos-btn-secondary',
-    danger: 'pos-btn-danger',
+    primary: 'bg-[#ff5a3c] hover:bg-[#e54a2c] text-white shadow-md hover:shadow-lg',
+    secondary: 'bg-[#ff8743] hover:bg-[#e6772b] text-white shadow-md hover:shadow-lg',
+    danger: 'bg-[#ef4444] hover:bg-[#dc2626] text-white shadow-md hover:shadow-lg',
   };
   
   const sizeClasses = {
-    sm: 'pos-btn-sm',
-    md: 'pos-btn-md',
-    lg: 'pos-btn-lg',
+    sm: 'px-3 py-2 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg',
   };
   
   const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';

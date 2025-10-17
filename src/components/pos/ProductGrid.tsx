@@ -18,10 +18,10 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({ products }) => {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-6">🍽️</div>
-        <h3 className="pos-heading-3 text-gray-600 mb-3">
+        <h3 className="text-xl font-semibold text-gray-600 mb-3">
           Không có sản phẩm nào
         </h3>
-        <p className="pos-body text-gray-500">
+        <p className="text-base text-gray-500">
           Vui lòng chọn danh mục khác để xem thêm sản phẩm
         </p>
       </div>

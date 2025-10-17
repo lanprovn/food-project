@@ -145,7 +145,8 @@ describe('CheckoutPage', () => {
       updateQuantity: vi.fn(),
       clearCart: vi.fn(),
       isCartOpen: false,
-      setIsCartOpen: vi.fn()
+      setIsCartOpen: vi.fn(),
+      updateOrderStatus: vi.fn()
     });
 
     renderCheckoutPage();
