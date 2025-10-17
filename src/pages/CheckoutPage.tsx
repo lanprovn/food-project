@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
+import { deductStock } from '../utils/stockManagement';
 
 /**
  * Customer information interface
@@ -69,6 +70,64 @@ const CheckoutPage: React.FC = () => {
       'card': 'Thẻ ngân hàng',
       'qr': 'Quét mã QR'
     };
+    
+    // Generate order ID
+    const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Save order to daily sales
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const storedData = localStorage.getItem(`dailySales_${today}`);
+      
+      let dailySales;
+      if (storedData) {
+        dailySales = JSON.parse(storedData);
+      } else {
+        dailySales = {
+          date: today,
+          totalRevenue: 0,
+          totalOrders: 0,
+          orders: []
+        };
+      }
+      
+      // Add new order with detailed product information
+      const orderDetails = {
+        id: orderId,
+        timestamp: Date.now(),
+        total: totalPrice,
+        items: items.length,
+        customerName: customerInfo.name || 'Khách hàng',
+        products: items.map(item => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.totalPrice,
+          size: item.selectedSize?.name || null,
+          toppings: item.selectedToppings.map(t => t.name),
+          note: item.note || null
+        }))
+      };
+      
+      dailySales.orders.push(orderDetails);
+      dailySales.totalOrders += 1;
+      dailySales.totalRevenue += totalPrice;
+      
+      // Save back to localStorage
+      localStorage.setItem(`dailySales_${today}`, JSON.stringify(dailySales));
+      console.log('Order saved to daily sales:', orderId);
+      
+      // Deduct stock for each item
+      items.forEach(item => {
+        deductStock(item.id, item.quantity);
+      });
+      
+      // Dispatch custom event for real-time updates
+      window.dispatchEvent(new CustomEvent('orderCompleted', {
+        detail: { orderId, total: totalPrice, items: items.length }
+      }));
+    } catch (error) {
+      console.error('Error saving order to daily sales:', error);
+    }
     
     // Update order status to paid and sync to display
     updateOrderStatus('paid', {

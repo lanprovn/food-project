@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ProductGrid from '../components/pos/ProductGrid';
 import { useProducts } from '../hooks/useProducts';
+import { useNavigate } from 'react-router-dom';
+import StockAlertsPanel from '../components/shared/StockAlertsPanel';
+import StockInitializer from '../components/shared/StockInitializer';
 
 /**
  * POSPage Component
@@ -13,6 +16,7 @@ import { useProducts } from '../hooks/useProducts';
 const POSPage: React.FC = () => {
   const { filteredProducts, setSelectedCategory, isLoading } = useProducts();
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Set initial category to show all products
@@ -30,6 +34,9 @@ const POSPage: React.FC = () => {
 
   return (
     <div className="w-full">
+      <StockInitializer />
+      <StockAlertsPanel />
+      
       {/* Mobile Category Filter */}
       <div className="lg:hidden mb-6">
         <div className="flex overflow-x-auto pb-2">
@@ -48,12 +55,23 @@ const POSPage: React.FC = () => {
 
       {/* Page Header */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          Hệ thống Order
-        </h2>
-        <p className="text-lg text-gray-600">
-          Chọn món ăn và thức uống từ menu bên dưới
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Hệ thống Order
+            </h2>
+            <p className="text-lg text-gray-600">
+              Chọn món ăn và thức uống từ menu bên dưới
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center space-x-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors"
+          >
+            📊
+            <span>Doanh Thu</span>
+          </button>
+        </div>
       </div>
       
       {/* Product Content */}

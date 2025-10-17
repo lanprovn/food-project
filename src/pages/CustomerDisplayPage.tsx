@@ -130,10 +130,10 @@ const CustomerDisplayPage: React.FC = () => {
                 <h1 className="text-3xl font-bold text-gray-800">
                   Ocha Việt
                 </h1>
-                <p className="text-sm text-gray-600 font-medium tracking-wide">Premium Customer Experience</p>
+                <p className="text-sm text-gray-600 font-medium tracking-wide">Trải Nghiệm Khách Hàng Cao Cấp</p>
                 <div className="flex items-center space-x-2 mt-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-xs text-green-600">Live System</span>
+                  <span className="text-xs text-green-600">Hệ Thống Trực Tuyến</span>
                 </div>
               </div>
             </div>
@@ -145,7 +145,7 @@ const CustomerDisplayPage: React.FC = () => {
                   <div className={`absolute inset-0 w-4 h-4 rounded-full ${isConnected ? 'bg-green-500 animate-ping opacity-30' : 'bg-red-400 animate-ping opacity-30'}`}></div>
                 </div>
                 <span className="text-sm font-semibold text-green-700">
-                  {isConnected ? 'System Online' : 'System Offline'}
+                  {isConnected ? 'Hệ Thống Hoạt Động' : 'Hệ Thống Ngoại Tuyến'}
                 </span>
               </div>
               <div className="bg-green-100/80 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-xl border border-green-200/50">
@@ -179,7 +179,7 @@ const CustomerDisplayPage: React.FC = () => {
               <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-pink-500 rounded-full animate-pulse opacity-40"></div>
             </div>
             <h2 className="text-4xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent mb-6">
-              Connection Error
+              Lỗi Kết Nối
             </h2>
             <p className="text-gray-300 mb-10 max-w-lg text-lg leading-relaxed">{error}</p>
             <button
@@ -190,7 +190,7 @@ const CustomerDisplayPage: React.FC = () => {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                <span>Refresh System</span>
+                <span>Tải Lại Hệ Thống</span>
               </div>
             </button>
           </div>
@@ -208,7 +208,7 @@ const CustomerDisplayPage: React.FC = () => {
               <div className="absolute top-8 -left-8 w-6 h-6 bg-gradient-to-r from-lime-400 to-emerald-400 rounded-full animate-pulse shadow-lg" style={{animationDelay: '1s'}}></div>
             </div>
             <h2 className="text-5xl font-bold text-gray-800 mb-6">
-              Awaiting Your Order
+              Chờ Đơn Hàng Của Bạn
             </h2>
             <div className="flex space-x-3">
               <div className="w-4 h-4 bg-emerald-400 rounded-full animate-bounce shadow-lg"></div>
@@ -241,14 +241,14 @@ const CustomerDisplayPage: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-2">
-                        {displayData.customerInfo.name || 'Valued Customer'}
+                        {displayData.customerInfo.name || 'Khách Hàng Thân Thiết'}
                       </h3>
                       {displayData.customerInfo.table && (
                         <div className="flex items-center space-x-2">
                           <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
-                          <p className="text-green-600 font-semibold">Table: {displayData.customerInfo.table}</p>
+                          <p className="text-green-600 font-semibold">Bàn: {displayData.customerInfo.table}</p>
                         </div>
                       )}
                     </div>
@@ -263,7 +263,7 @@ const CustomerDisplayPage: React.FC = () => {
                     <svg className="w-8 h-8 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
-                    Your Culinary Journey ({displayData.totalItems} items)
+                    Hành Trình Ẩm Thực Của Bạn ({displayData.totalItems} món)
                   </h3>
                 </div>
 
@@ -291,19 +291,19 @@ const CustomerDisplayPage: React.FC = () => {
                               {item.selectedSize && (
                                 <div className="flex items-center">
                                   <span className="w-3 h-3 bg-emerald-400 rounded-full mr-3 shadow-lg"></span>
-                                  <span className="font-semibold">Size: <span className="text-gray-700">{item.selectedSize.name}</span></span>
+                                  <span className="font-semibold">Kích thước: <span className="text-gray-700">{item.selectedSize.name}</span></span>
                                 </div>
                               )}
                               {item.selectedToppings.length > 0 && (
                                 <div className="flex items-center">
                                   <span className="w-3 h-3 bg-green-400 rounded-full mr-3 shadow-lg"></span>
-                                  <span className="font-semibold">Toppings: <span className="text-gray-700">{item.selectedToppings.map(t => t.name).join(', ')}</span></span>
+                                  <span className="font-semibold">Topping: <span className="text-gray-700">{item.selectedToppings.map(t => t.name).join(', ')}</span></span>
                                 </div>
                               )}
                               {item.note && (
                                 <div className="flex items-center">
                                   <span className="w-3 h-3 bg-teal-400 rounded-full mr-3 shadow-lg"></span>
-                                  <span className="font-semibold">Note: <span className="text-gray-700">{item.note}</span></span>
+                                  <span className="font-semibold">Ghi chú: <span className="text-gray-700">{item.note}</span></span>
                                 </div>
                               )}
                             </div>
@@ -313,7 +313,7 @@ const CustomerDisplayPage: React.FC = () => {
                               {formatPrice(item.totalPrice)}
                             </div>
                             <div className="text-sm text-gray-500 font-medium mt-1">
-                              Qty: {item.quantity}
+                              SL: {item.quantity}
                             </div>
                           </div>
                         </div>
@@ -329,12 +329,12 @@ const CustomerDisplayPage: React.FC = () => {
               <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-green-200/30 h-full flex flex-col">
                 <div className="mb-8">
                   <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                    Order Summary
+                    Tóm Tắt Đơn Hàng
                   </h3>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
                     <p className="text-gray-600 text-sm font-semibold">
-                      {displayData.totalItems} culinary items
+                      {displayData.totalItems} món ăn
                     </p>
                   </div>
                 </div>
@@ -347,7 +347,7 @@ const CustomerDisplayPage: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <div>
-                        <div className="font-semibold">Order Time</div>
+                        <div className="font-semibold">Thời Gian Đặt Hàng</div>
                         <div className="text-xs text-gray-500">{formatOrderTime(displayData.timestamp)}</div>
                       </div>
                     </div>
@@ -358,7 +358,7 @@ const CustomerDisplayPage: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
                       <div>
-                        <div className="font-semibold">Payment Method</div>
+                        <div className="font-semibold">Phương Thức Thanh Toán</div>
                         <div className="text-xs text-gray-500">
                           {displayData.paymentMethod === 'cash' ? 'Tiền mặt' : 
                            displayData.paymentMethod === 'card' ? 'Thẻ ngân hàng' : 
@@ -374,7 +374,7 @@ const CustomerDisplayPage: React.FC = () => {
                   <div className="text-5xl font-bold text-gray-800 mb-3">
                     {formatPrice(displayData.totalPrice)}
                   </div>
-                  <div className="text-gray-600 text-sm font-semibold">Total Investment</div>
+                  <div className="text-gray-600 text-sm font-semibold">Tổng Tiền</div>
                 </div>
 
                 {/* Progress Bar */}
@@ -425,14 +425,14 @@ const CustomerDisplayPage: React.FC = () => {
             <div className="w-3 h-3 bg-gradient-to-r from-lime-400 to-emerald-500 rounded-full animate-pulse shadow-lg" style={{animationDelay: '1.5s'}}></div>
           </div>
           <p className="text-sm text-gray-700 font-semibold mb-2">
-            © 2024 Ocha Việt POS - Premium Customer Experience
+            © 2024 Ocha Việt POS - Trải Nghiệm Khách Hàng Cao Cấp
           </p>
           <p className="text-xs text-gray-600 font-medium">
-            Powered by Advanced Real-time Technology • Crafted with ❤️
+            Được hỗ trợ bởi Công Nghệ Thời Gian Thực Tiên Tiến • Được tạo với ❤️
           </p>
           <div className="flex items-center justify-center space-x-2 mt-3">
             <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs text-gray-600 font-medium">System Operational</span>
+            <span className="text-xs text-gray-600 font-medium">Hệ Thống Hoạt Động</span>
           </div>
         </div>
       </footer>

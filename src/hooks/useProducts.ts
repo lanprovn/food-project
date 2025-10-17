@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { ProductContext } from '../context/ProductContext.ts';
+import { ProductContext } from '../context/ProductContext';
 import type { ProductContextType } from '../types/product';
 
 /**

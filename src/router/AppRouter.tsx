@@ -20,6 +20,8 @@ const ProductDetailPage = lazy(() => import('../pages/ProductDetailPage'));
 const CheckoutPage = lazy(() => import('../pages/CheckoutPage'));
 const OrderSuccessPage = lazy(() => import('../pages/OrderSuccessPage'));
 const CustomerDisplayPage = lazy(() => import('../pages/CustomerDisplayPage'));
+const DashboardPage = lazy(() => import('../pages/DashboardPage'));
+const StockManagementPage = lazy(() => import('../pages/StockManagementPage'));
 
 // ===== Loader Component =====
 const PageLoader = () => (
@@ -85,6 +87,16 @@ function AppRoutes() {
           {/* Checkout */}
           <Route path="/checkout" element={<POSLayoutNew />}>
             <Route index element={<CheckoutPage />} />
+          </Route>
+
+          {/* Doanh Thu */}
+          <Route path="/dashboard" element={<MainLayout />}>
+            <Route index element={<DashboardPage />} />
+          </Route>
+
+          {/* Stock Management */}
+          <Route path="/stock-management" element={<MainLayout />}>
+            <Route index element={<StockManagementPage />} />
           </Route>
 
           {/* Fallback */}
