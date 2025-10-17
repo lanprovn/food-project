@@ -14,7 +14,7 @@ const StockInitializer: React.FC = () => {
         // Initialize with random stock between 10-50
         const initialStock = Math.floor(Math.random() * 40) + 10;
         try {
-          initializeProductStock(product.id, initialStock);
+          initializeProductStock(String(product.id), initialStock);
           console.log(`Initialized stock for ${product.name}: ${initialStock}`);
         } catch (error) {
           console.error(`Failed to initialize stock for ${product.name}:`, error);
