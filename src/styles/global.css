@@ -1,0 +1,31 @@
+/* ========== GLOBAL FULL LAYOUT RESET ========== */
+html, body, #root {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #ffffff !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit !important;
+}
+
+/* Xóa toàn bộ container bị giới hạn width */
+[class*="container"],
+.pos-container {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Reset mọi text-align trung tâm */
+#root > div {
+  text-align: unset !important;
+}

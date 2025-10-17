@@ -1,20 +1,27 @@
-import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from '../context/CartContext.tsx';
 import { ProductProvider } from '../context/ProductContext.tsx';
 
-// Lazy load layouts
+// ===== Lazy load layouts =====
 const MainLayout = lazy(() => import('../components/layout/MainLayout'));
 const POSLayoutNew = lazy(() => import('../components/layout/POSLayoutNew'));
 
-// Lazy load pages for better performance
+// ===== Lazy load pages =====
 const POSPage = lazy(() => import('../pages/POSPage'));
 const ProductDetailPage = lazy(() => import('../pages/ProductDetailPage'));
 const CheckoutPage = lazy(() => import('../pages/CheckoutPage'));
 const OrderSuccessPage = lazy(() => import('../pages/OrderSuccessPage'));
+const CustomerDisplayPage = lazy(() => import('../pages/CustomerDisplayPage'));
 
-// Loading component
+// ===== Loader Component =====
 const PageLoader = () => (
   <div className="h-screen flex items-center justify-center bg-gray-50">
     <div className="text-center">
@@ -24,46 +31,90 @@ const PageLoader = () => (
   </div>
 );
 
+// ===== Layout Reset Component =====
+function LayoutReset() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    document.body.removeAttribute('data-page');
+    document.body.setAttribute('data-page', pathname.replace('/', '') || 'home');
+    document.body.style.overflow = 'hidden';
+  }, [pathname]);
+
+  return null;
+}
+
+/**
+ * AppRoutes – xử lý toàn bộ định tuyến và tách riêng giao diện hiển thị
+ */
+function AppRoutes() {
+  const location = useLocation();
+  const isDisplayPage = location.pathname.startsWith('/display');
+
+  // === CASE 1: Customer Display (full screen, no wrapper) ===
+  if (isDisplayPage) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/display" element={<CustomerDisplayPage />} />
+          <Route path="*" element={<Navigate to="/display" replace />} />
+        </Routes>
+      </Suspense>
+    );
+  }
+
+  // === CASE 2: POS + Pages khác (dùng layout POS/Main) ===
+  return (
+    <div className="min-h-screen w-full bg-gray-50 overflow-x-hidden">
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* Redirect root to POS */}
+          <Route path="/" element={<Navigate to="/pos" replace />} />
+
+          {/* Order success */}
+          <Route path="/order-success" element={<MainLayout />}>
+            <Route index element={<OrderSuccessPage />} />
+          </Route>
+
+          {/* POS Layout */}
+          <Route path="/pos" element={<POSLayoutNew />}>
+            <Route index element={<POSPage />} />
+            <Route path=":id" element={<ProductDetailPage />} />
+          </Route>
+
+          {/* Checkout */}
+          <Route path="/checkout" element={<POSLayoutNew />}>
+            <Route index element={<CheckoutPage />} />
+          </Route>
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/pos" replace />} />
+        </Routes>
+      </Suspense>
+    </div>
+  );
+}
+
+/**
+ * AppRouter – bọc provider và router
+ */
 const AppRouter: React.FC = () => {
   return (
     <Router>
+      <LayoutReset />
       <CartProvider>
         <ProductProvider>
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  {/* Redirect root to POS */}
-                  <Route path="/" element={<Navigate to="/pos" replace />} />
-                  
-                  {/* Main Layout Routes */}
-                  <Route path="/order-success" element={<MainLayout />}>
-                    <Route index element={<OrderSuccessPage />} />
-                  </Route>
-                  
-                  {/* POS Layout Routes */}
-                  <Route path="/pos" element={<POSLayoutNew />}>
-                    <Route index element={<POSPage />} />
-                    <Route path=":id" element={<ProductDetailPage />} />
-                  </Route>
-                  
-                  {/* Checkout Route - Standalone */}
-                  <Route path="/checkout" element={<POSLayoutNew />}>
-                    <Route index element={<CheckoutPage />} />
-                  </Route>
-                  
-                  {/* Fallback - redirect to POS */}
-                  <Route path="*" element={<Navigate to="/pos" replace />} />
-                </Routes>
-              </Suspense>
-              <Toaster 
-                position="top-right"
-                toastOptions={{
-                  duration: 3000,
-                  style: {
-                    background: '#363636',
-                    color: '#fff',
-                  },
-                }}
-              />
+          <AppRoutes />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+            }}
+          />
         </ProductProvider>
       </CartProvider>
     </Router>

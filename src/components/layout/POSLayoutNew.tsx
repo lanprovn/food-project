@@ -5,13 +5,17 @@ import SidebarCategory from '../pos/SidebarCategory';
 import CartPanel from '../pos/CartPanel';
 import { useCart } from '../../hooks/useCart';
 import { useProducts } from '../../hooks/useProducts';
+import { usePOSDisplaySync } from '../../hooks/useDisplaySync';
 
 export default function POSLayoutNew() {
   const navigate = useNavigate();
-  const { totalItems } = useCart();
+  const { items, totalPrice, totalItems } = useCart();
   const { categories, setSelectedCategory } = useProducts();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
+
+  // Sync cart data to customer display
+  usePOSDisplaySync(items, totalPrice, totalItems, 'creating');
 
   // Initialize category selection
   useEffect(() => {

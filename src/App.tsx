@@ -4,7 +4,7 @@ import ErrorBoundary from './components/shared/ErrorBoundary';
 function App() {
   return (
     <ErrorBoundary>
-      <div className="flex flex-col h-screen w-full overflow-hidden bg-gray-50">
+      <div id="app-wrapper" className="w-screen h-screen overflow-hidden bg-white">
         <AppRouter />
       </div>
     </ErrorBoundary>
@@ -12,4 +12,3 @@ function App() {
 }
 
 export default App;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              

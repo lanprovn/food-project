@@ -28,7 +28,7 @@ type PaymentMethod = 'cash' | 'card' | 'qr';
  * - Order completion and navigation
  */
 const CheckoutPage: React.FC = () => {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, updateOrderStatus } = useCart();
   const navigate = useNavigate();
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     name: '',
@@ -69,6 +69,12 @@ const CheckoutPage: React.FC = () => {
       'card': 'Thẻ ngân hàng',
       'qr': 'Quét mã QR'
     };
+    
+    // Update order status to paid and sync to display
+    updateOrderStatus('paid', {
+      name: customerInfo.name || 'Khách hàng',
+      table: customerInfo.table || undefined
+    }, paymentMethod, 'success');
     
     alert(`Thanh toán ${paymentMethods[paymentMethod]} thành công!`);
     clearCart();

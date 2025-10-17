@@ -4,6 +4,7 @@ import type { CartContextType, CartItem } from '../types/cart';
 import { CartContext } from './CartContext';
 import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
+import { useDisplaySync } from '../hooks/useDisplaySync';
 
 interface CartProviderProps {
   children: ReactNode;
@@ -12,6 +13,9 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  
+  // Real-time display sync
+  const { sendToDisplay } = useDisplaySync();
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -29,6 +33,17 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('foodwagon_cart', JSON.stringify(items));
   }, [items]);
+
+  // Real-time sync to Customer Display whenever cart changes
+  useEffect(() => {
+    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0);
+    
+    console.log('🛒 Cart changed, syncing to display:', { items: items.length, totalItems, totalPrice });
+    
+    // Always sync to display, even when cart is empty
+    sendToDisplay(items, totalPrice, totalItems, 'creating');
+  }, [items, sendToDisplay]);
 
   const addToCart = (item: Omit<CartItem, 'id'>) => {
     setItems(prevItems => {
@@ -97,6 +112,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     setTimeout(() => toast.success('Đã xóa tất cả giỏ hàng!'), 0);
   };
 
+  // Function to update order status and sync to display
+  const updateOrderStatus = (status: 'creating' | 'confirmed' | 'paid' | 'completed', customerInfo?: { name?: string; table?: string }, paymentMethod?: 'cash' | 'card' | 'qr', paymentStatus?: 'success' | 'pending' | 'failed') => {
+    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0);
+    
+    sendToDisplay(items, totalPrice, totalItems, status, customerInfo, paymentMethod, paymentStatus);
+  };
+
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0);
 
@@ -110,6 +133,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     clearCart,
     isCartOpen,
     setIsCartOpen,
+    updateOrderStatus,
   };
 
   return (
