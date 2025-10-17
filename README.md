@@ -5,8 +5,8 @@
   
   [![React](https://img.shields.io/badge/React-18.2.0-blue.svg)](https://reactjs.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0.0-blue.svg)](https://www.typescriptlang.org/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0.0-38B2AC.svg)](https://tailwindcss.com/)
-  [![Vite](https://img.shields.io/badge/Vite-7.1.9-646CFF.svg)](https://vitejs.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.0-38B2AC.svg)](https://tailwindcss.com/)
+  [![Vite](https://img.shields.io/badge/Vite-5.0.0-646CFF.svg)](https://vitejs.dev/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 </div>
 
@@ -16,14 +16,15 @@
 
 ### ✨ Tính năng nổi bật
 
-- 🎯 **Giao diện hiện đại**: Thiết kế responsive, thân thiện với người dùng
-- 🛒 **Quản lý giỏ hàng**: Thêm/sửa/xóa sản phẩm dễ dàng
+- 🎯 **Giao diện hiện đại**: Thiết kế responsive với green tone professional
+- 🛒 **Quản lý giỏ hàng**: Thêm/sửa/xóa sản phẩm dễ dàng với real-time sync
 - 📱 **Responsive Design**: Hoạt động tốt trên desktop, tablet và mobile
 - 🏷️ **Quản lý danh mục**: Phân loại sản phẩm theo category
 - 💳 **Thanh toán đa dạng**: Hỗ trợ tiền mặt, thẻ, QR code
 - 📊 **Theo dõi đơn hàng**: Quản lý và theo dõi trạng thái đơn hàng
-- 🔐 **Xác thực người dùng**: Đăng nhập/đăng ký an toàn
+- 🖥️ **Customer Display**: Màn hình hiển thị cho khách hàng với real-time updates
 - ⚡ **Tốc độ cao**: Sử dụng Vite và lazy loading
+- 🔄 **Real-time Sync**: Đồng bộ dữ liệu giữa POS và Customer Display
 
 ## 🚀 Cài đặt và Chạy
 
@@ -35,8 +36,8 @@
 ### Bước 1: Clone repository
 
 ```bash
-git clone https://github.com/yourusername/ocha-viet-pos.git
-cd ocha-viet-pos
+git clone https://github.com/lanprovn/food-project.git
+cd food-project
 ```
 
 ### Bước 2: Cài đặt dependencies
@@ -70,20 +71,17 @@ yarn build
 ```
 src/
 ├── components/          # Components React
-│   ├── auth/           # Components xác thực
-│   ├── cart/           # Components giỏ hàng
-│   ├── layout/         # Layout components
-│   ├── pos/            # POS-specific components
-│   ├── product/        # Product components
-│   └── shared/         # Shared components
-├── context/            # React Context providers
-├── hooks/              # Custom React hooks
-├── pages/              # Page components
-├── router/             # Routing configuration
-├── service/            # API services
-├── types/              # TypeScript type definitions
-├── utils/              # Utility functions
-└── assets/             # Static assets
+│   ├── layout/          # Layout components (MainLayout, POSLayoutNew)
+│   ├── pos/             # POS-specific components (CartPanel, ProductCard, etc.)
+│   ├── shared/          # Shared components (ButtonFilled, ErrorBoundary, etc.)
+│   └── ui/              # UI components (Toast)
+├── context/             # React Context providers (CartContext, ProductContext)
+├── hooks/               # Custom React hooks (useCart, useDisplaySync, useProducts)
+├── pages/               # Page components (POSPage, CheckoutPage, CustomerDisplayPage, etc.)
+├── router/              # Routing configuration (AppRouter)
+├── types/               # TypeScript type definitions (cart, display, product)
+├── utils/               # Utility functions (formatPrice)
+└── assets/              # Static assets (images, CSS, JSON data)
 ```
 
 ## 🎨 Công nghệ sử dụng
@@ -91,44 +89,115 @@ src/
 ### Frontend Stack
 - **React 18.2.0** - UI Framework
 - **TypeScript 5.0.0** - Type safety
-- **Tailwind CSS 4.0.0** - Styling
+- **Tailwind CSS 3.4.0** - Styling
 - **React Router** - Client-side routing
 - **React Hot Toast** - Notifications
 - **Heroicons** - Icon library
 
 ### Build Tools
-- **Vite 7.1.9** - Build tool và dev server
+- **Vite 5.0.0** - Build tool và dev server
 - **PostCSS** - CSS processing
 - **ESLint** - Code linting
 - **Vitest** - Testing framework
 
 ### State Management
-- **React Context API** - Global state
+- **React Context API** - Global state management
 - **Custom Hooks** - Local state management
+- **BroadcastChannel API** - Real-time communication
 
 ## 📱 Chức năng chính
 
-### 🛒 Hệ thống POS
-- **Danh sách sản phẩm**: Hiển thị sản phẩm theo danh mục
-- **Chi tiết sản phẩm**: Xem thông tin chi tiết, chọn size, topping
-- **Giỏ hàng**: Thêm/sửa/xóa sản phẩm, tính tổng tiền
-- **Thanh toán**: Hỗ trợ nhiều phương thức thanh toán
+### 🛒 Hệ thống POS (`/pos`)
+- **Danh sách sản phẩm**: Hiển thị sản phẩm theo danh mục với sidebar navigation
+- **Chi tiết sản phẩm**: Modal hiển thị thông tin chi tiết, chọn size, topping
+- **Giỏ hàng**: Panel bên phải với thêm/sửa/xóa sản phẩm, tính tổng tiền
+- **Real-time sync**: Đồng bộ dữ liệu với Customer Display ngay lập tức
 
-### 👤 Quản lý người dùng
-- **Đăng ký**: Tạo tài khoản mới
-- **Đăng nhập**: Xác thực người dùng
-- **Quản lý profile**: Cập nhật thông tin cá nhân
+### 🖥️ Customer Display (`/display`)
+- **Professional Design**: Green tone design với clean white cards
+- **Real-time Updates**: Hiển thị đơn hàng ngay khi có thay đổi từ POS
+- **Order Status**: Theo dõi trạng thái đơn hàng (creating, confirmed, paid, completed)
+- **Payment Info**: Hiển thị phương thức thanh toán và trạng thái
+- **Responsive Layout**: 70% order items, 30% price summary
+
+### 💳 Thanh toán (`/checkout`)
+- **Multiple Payment Methods**: Tiền mặt, thẻ ngân hàng, QR code
+- **Customer Info**: Nhập thông tin khách hàng và bàn
+- **Order Summary**: Xem lại đơn hàng trước khi thanh toán
+- **Success Page**: Trang xác nhận thanh toán thành công
 
 ### 📊 Quản lý đơn hàng
-- **Tạo đơn hàng**: Từ giỏ hàng
-- **Theo dõi đơn hàng**: Xem trạng thái đơn hàng
-- **Lịch sử đơn hàng**: Xem các đơn hàng đã đặt
+- **Order Tracking**: Theo dõi trạng thái đơn hàng real-time
+- **Payment Status**: Hiển thị trạng thái thanh toán
+- **Order History**: Lưu trữ lịch sử đơn hàng
+- **Customer Info**: Quản lý thông tin khách hàng
 
-### 🎨 Giao diện
-- **Responsive**: Tối ưu cho mọi thiết bị
-- **Dark/Light mode**: Chế độ sáng/tối
-- **Animations**: Hiệu ứng mượt mà
-- **Accessibility**: Hỗ trợ người khuyết tật
+## 🔄 Real-time Synchronization
+
+Hệ thống sử dụng **BroadcastChannel API** và **localStorage** để đồng bộ dữ liệu giữa POS và Customer Display:
+
+### Cơ chế đồng bộ
+- **BroadcastChannel**: Giao tiếp giữa các tab/window
+- **localStorage**: Lưu trữ dữ liệu và đồng bộ cross-origin
+- **Custom Events**: Cập nhật instant trong cùng tab
+- **Storage Events**: Lắng nghe thay đổi localStorage
+- **Polling**: Fallback mechanism với interval 50ms
+
+### Data Flow
+```
+POS Page → CartContext → useDisplaySync → BroadcastChannel/localStorage
+                                                      ↓
+Customer Display ← useDisplaySync ← BroadcastChannel/localStorage
+```
+
+## 🎨 Design System
+
+### Color Palette
+- **Primary Background**: Green-50 → Emerald-50 → Teal-50 gradients
+- **Cards**: White/80 với green-200/30 borders
+- **Text**: Gray-800 (headings), Gray-700 (secondary), Gray-600 (tertiary)
+- **Accents**: Emerald-400, Green-400, Teal-400, Lime-400
+- **Status Colors**: Green tones cho status indicators
+
+### Typography
+- **Headings**: Large, bold với proper hierarchy
+- **Body Text**: Clean gray colors cho readability
+- **Status Text**: Bold với color coding
+- **Professional**: Non-distracting cho customer experience
+
+### Animations
+- **Floating Particles**: Green tones với staggered delays
+- **Hover Effects**: Scale transforms và shadow changes
+- **Progress Bars**: Smooth transitions với green gradients
+- **Status Indicators**: Pulse animations cho live feedback
+
+## 🧪 Testing
+
+Dự án sử dụng **Vitest** và **React Testing Library** để đảm bảo chất lượng code.
+
+### Chạy Tests
+
+```bash
+# Chạy tất cả tests
+npm run test
+
+# Chạy tests với UI
+npm run test:ui
+
+# Chạy tests với coverage report
+npm run test:coverage
+
+# Chạy tests trong watch mode
+npm run test:watch
+```
+
+### Test Coverage
+
+Dự án có test coverage cho:
+- ✅ **Components**: POSPage, CheckoutPage, OrderSuccessPage
+- ✅ **Hooks**: useCart, useProducts
+- ✅ **Context**: CartContext, ProductContext
+- ✅ **Utilities**: formatPrice
 
 ## 🔧 Cấu hình
 
@@ -152,143 +221,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#f97316', // Orange
-        secondary: '#64748b', // Slate
+        primary: '#10b981', // Emerald
+        secondary: '#059669', // Green
       },
     },
   },
   plugins: [],
 }
 ```
-
-## 🧪 Testing
-
-Dự án sử dụng **Vitest** và **React Testing Library** để đảm bảo chất lượng code và tính ổn định của ứng dụng.
-
-### Chạy Tests
-
-```bash
-# Chạy tất cả tests
-npm run test
-
-# Chạy tests với UI
-npm run test:ui
-
-# Chạy tests với coverage report
-npm run test:coverage
-
-# Chạy tests trong watch mode
-npm run test:watch
-```
-
-### Test Coverage
-
-Dự án có test coverage cho:
-
-- ✅ **Components**: POSPage, CheckoutPage, OrderSuccessPage
-- ✅ **Hooks**: useCart, useProducts, useAppLogger
-- ✅ **Context**: AuthContext, CartContext
-- ✅ **Utilities**: formatPrice, validation functions
-
-### Test Structure
-
-```
-src/
-├── components/__tests__/     # Component tests
-├── context/__tests__/        # Context tests
-├── hooks/__tests__/          # Hook tests
-├── pages/__tests__/          # Page tests
-└── test/                     # Test setup and utilities
-    └── setup.ts             # Test configuration
-```
-
-### Viết Tests Mới
-
-```typescript
-// Example: Component test
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import MyComponent from '../MyComponent';
-
-describe('MyComponent', () => {
-  it('renders correctly', () => {
-    render(<MyComponent />);
-    expect(screen.getByText('Expected Text')).toBeInTheDocument();
-  });
-
-  it('handles user interaction', () => {
-    const mockHandler = vi.fn();
-    render(<MyComponent onClick={mockHandler} />);
-    
-    fireEvent.click(screen.getByRole('button'));
-    expect(mockHandler).toHaveBeenCalledTimes(1);
-  });
-});
-```
-
-## 📊 Monitoring & Analytics
-
-Dự án tích hợp hệ thống monitoring và analytics để theo dõi hiệu suất và lỗi trong production.
-
-### Logging System
-
-```typescript
-import { useAppLogger } from './hooks/useAppLogger';
-
-const MyComponent = () => {
-  const logger = useAppLogger();
-
-  const handleError = (error: Error) => {
-    logger.trackError(error, { component: 'MyComponent' });
-  };
-
-  const handleUserAction = () => {
-    logger.trackUserAction('button_click', { buttonId: 'submit' });
-  };
-
-  return <div>...</div>;
-};
-```
-
-### Error Tracking
-
-- **Sentry Integration**: Sẵn sàng tích hợp Sentry cho production
-- **Console Logging**: Fallback logging cho development
-- **Error Boundaries**: React error boundary để catch errors
-- **Performance Tracking**: Theo dõi thời gian thực thi operations
-
-### Analytics Events
-
-```typescript
-// Track user interactions
-logger.trackUserAction('product_added', { productId: '123' });
-
-// Track page views
-logger.trackPageView('checkout', { step: 'payment' });
-
-// Track POS events
-logger.trackPOSEvent('order_completed', { totalAmount: 50000 });
-
-// Track cart operations
-logger.trackCartOperation('add', { productId: '123', quantity: 2 });
-```
-
-### Environment Configuration
-
-```env
-# .env.local
-VITE_SENTRY_DSN=your_sentry_dsn_here
-VITE_SENTRY_ENABLED=true
-NODE_ENV=production
-```
-
-### Monitoring Features
-
-- 🔍 **Error Tracking**: Tự động capture và report errors
-- 📈 **Performance Monitoring**: Theo dõi thời gian load và render
-- 👤 **User Analytics**: Track user behavior và interactions
-- 🛒 **Business Metrics**: Monitor POS operations và sales
-- 📱 **Session Tracking**: Theo dõi user sessions và engagement
 
 ## 📦 Build và Deploy
 
@@ -314,6 +254,29 @@ npm install -g netlify-cli
 netlify deploy --prod --dir=dist
 ```
 
+## 🚀 Quick Start
+
+1. **Clone repository**:
+   ```bash
+   git clone https://github.com/lanprovn/food-project.git
+   cd food-project
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in browser**:
+   - POS System: `http://localhost:3000/pos`
+   - Customer Display: `http://localhost:3000/display`
+   - Checkout: `http://localhost:3000/checkout`
+
 ## 🤝 Đóng góp
 
 Chúng tôi hoan nghênh mọi đóng góp! Vui lòng làm theo các bước sau:
@@ -329,6 +292,7 @@ Chúng tôi hoan nghênh mọi đóng góp! Vui lòng làm theo các bước sau
 - Viết tests cho code mới
 - Cập nhật documentation nếu cần
 - Đảm bảo build thành công
+- Maintain real-time sync functionality
 
 ## 📄 License
 
