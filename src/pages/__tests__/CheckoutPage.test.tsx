@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import CheckoutPage from '../CheckoutPage';
 import { CartProvider } from '../../context/CartContext.tsx';
+import { useCart } from '../../hooks/useCart';
 
 // Mock the cart hook
 const mockCartItems = [
@@ -135,10 +136,16 @@ describe('CheckoutPage', () => {
 
   it('shows empty cart message when no items', () => {
     // Mock empty cart
-    vi.mocked(require('../../hooks/useCart').useCart).mockReturnValue({
+    vi.mocked(useCart).mockReturnValue({
       items: [],
+      totalItems: 0,
       totalPrice: 0,
-      clearCart: vi.fn()
+      addToCart: vi.fn(),
+      removeFromCart: vi.fn(),
+      updateQuantity: vi.fn(),
+      clearCart: vi.fn(),
+      isCartOpen: false,
+      setIsCartOpen: vi.fn()
     });
 
     renderCheckoutPage();

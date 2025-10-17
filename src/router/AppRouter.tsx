@@ -2,16 +2,13 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from '../context/CartContext.tsx';
-import { AuthProvider } from '../context/AuthContext.tsx';
 import { ProductProvider } from '../context/ProductContext.tsx';
-import { WishlistProvider } from '../context/WishlistContext.tsx';
 
 // Lazy load layouts
 const MainLayout = lazy(() => import('../components/layout/MainLayout'));
 const POSLayoutNew = lazy(() => import('../components/layout/POSLayoutNew'));
 
 // Lazy load pages for better performance
-const MenuPage = lazy(() => import('../pages/MenuPage'));
 const POSPage = lazy(() => import('../pages/POSPage'));
 const ProductDetailPage = lazy(() => import('../pages/ProductDetailPage'));
 const CheckoutPage = lazy(() => import('../pages/CheckoutPage'));
@@ -31,19 +28,13 @@ const AppRouter: React.FC = () => {
   return (
     <Router>
       <CartProvider>
-        <AuthProvider>
-          <ProductProvider>
-            <WishlistProvider>
+        <ProductProvider>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   {/* Redirect root to POS */}
                   <Route path="/" element={<Navigate to="/pos" replace />} />
                   
                   {/* Main Layout Routes */}
-                  <Route path="/menu" element={<MainLayout />}>
-                    <Route index element={<MenuPage />} />
-                  </Route>
-                  
                   <Route path="/order-success" element={<MainLayout />}>
                     <Route index element={<OrderSuccessPage />} />
                   </Route>
@@ -73,9 +64,7 @@ const AppRouter: React.FC = () => {
                   },
                 }}
               />
-            </WishlistProvider>
-          </ProductProvider>
-        </AuthProvider>
+        </ProductProvider>
       </CartProvider>
     </Router>
   );

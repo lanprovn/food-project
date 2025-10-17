@@ -191,21 +191,6 @@ const CheckoutPage: React.FC = () => {
               </div>
               
               <div className="space-y-2">
-                <label htmlFor="table" className="block text-sm font-semibold text-gray-800">
-                  Số bàn
-                </label>
-                <input
-                  type="text"
-                  id="table"
-                  name="table"
-                  value={customerInfo.table}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
-                  placeholder="Nhập số bàn"
-                />
-              </div>
-              
-              <div className="space-y-2">
                 <label htmlFor="notes" className="block text-sm font-semibold text-gray-800">
                   Ghi chú đặc biệt
                 </label>

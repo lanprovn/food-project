@@ -1,9 +1,11 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import POSPage from '../../pages/POSPage';
 import { ProductProvider } from '../../context/ProductContext.tsx';
 import { CartProvider } from '../../context/CartContext.tsx';
+import type { Product } from '../../types/product';
+import { useProducts } from '../../hooks/useProducts';
 
 // Mock the hooks
 vi.mock('../../hooks/useProducts', () => ({
@@ -31,7 +33,7 @@ vi.mock('../../hooks/useProducts', () => ({
 
 // Mock ProductGrid component
 vi.mock('../../components/pos/ProductGrid', () => ({
-  default: ({ products }: { products: any[] }) => (
+  default: ({ products }: { products: Product[] }) => (
     <div data-testid="product-grid">
       {products.map(product => (
         <div key={product.id} data-testid={`product-${product.id}`}>
@@ -94,11 +96,23 @@ describe('POSPage', () => {
 
   it('displays loading state when products are loading', () => {
     // Mock loading state
-    vi.mocked(require('../../hooks/useProducts').useProducts).mockReturnValue({
+    vi.mocked(useProducts).mockReturnValue({
+      products: [],
+      restaurants: [],
+      categories: [],
+      discountItems: [],
       filteredProducts: [],
-      setSelectedCategory: vi.fn(),
+      searchQuery: '',
+      selectedCategory: 'all',
+      selectedTags: [],
+      sortBy: 'popular',
       isLoading: true,
-      categories: []
+      setSelectedCategory: vi.fn(),
+      setSearchQuery: vi.fn(),
+      setSelectedTags: vi.fn(),
+      setSortBy: vi.fn(),
+      filterProducts: vi.fn(),
+      loadProducts: vi.fn()
     });
 
     renderPOSPage();
