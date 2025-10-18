@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import {
-  IngredientStock,
-  IngredientTransaction,
-  IngredientAlert,
   getAllIngredientStocks,
   getIngredientTransactions,
   getIngredientAlerts,
@@ -16,6 +13,7 @@ import {
   initializeIngredientStock,
   saveIngredientStock
 } from '../utils/ingredientManagement';
+import type { IngredientStock, IngredientTransaction, IngredientAlert } from '../utils/ingredientManagement';
 
 // Import sample data
 import ingredientsData from '../data/ingredients.json';
