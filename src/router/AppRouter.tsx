@@ -9,6 +9,7 @@ import {
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from '../context/CartContext.tsx';
 import { ProductProvider } from '../context/ProductContext.tsx';
+import { IngredientProvider } from '../context/IngredientContext';
 
 // ===== Lazy load layouts =====
 const MainLayout = lazy(() => import('../components/layout/MainLayout'));
@@ -116,17 +117,19 @@ const AppRouter: React.FC = () => {
       <LayoutReset />
       <CartProvider>
         <ProductProvider>
-          <AppRoutes />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-              },
-            }}
-          />
+          <IngredientProvider>
+            <AppRoutes />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+              }}
+            />
+          </IngredientProvider>
         </ProductProvider>
       </CartProvider>
     </Router>

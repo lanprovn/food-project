@@ -3,6 +3,7 @@ import { useCart } from '../hooks/useCart';
 import { formatPrice } from '../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
 import { deductStock } from '../utils/stockManagement';
+import { deductIngredientsForProduct } from '../utils/ingredientManagement';
 
 /**
  * Customer information interface
@@ -119,6 +120,8 @@ const CheckoutPage: React.FC = () => {
       // Deduct stock for each item
       items.forEach(item => {
         deductStock(item.id, item.quantity);
+        // Also deduct ingredients for this product
+        deductIngredientsForProduct(item.id, item.quantity);
       });
       
       // Dispatch custom event for real-time updates
