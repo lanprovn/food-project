@@ -11,7 +11,7 @@ const ProductGrid: React.FC<ProductGridProps> = memo(({ products }) => {
   const navigate = useNavigate();
 
   const handleProductClick = useCallback((product: Product) => {
-    navigate(`/pos/${product.id}`);
+    navigate(`/product/${product.id}`);
   }, [navigate]);
 
   if (products.length === 0) {

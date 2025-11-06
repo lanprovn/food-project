@@ -23,7 +23,7 @@ export default function POSLayoutNew() {
   }, [setSelectedCategory]);
 
   const handleBack = () => {
-    navigate('/pos');
+    navigate('/');
   };
 
   const handleCheckout = () => {

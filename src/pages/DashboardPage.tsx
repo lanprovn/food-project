@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { getLowStockProducts, getOutOfStockProducts, getStockAlerts } from '../utils/stockManagement';
+import { getOutOfStockProducts, getStockAlerts } from '../utils/stockManagement';
 
 interface OrderSummary {
   id: string;
@@ -125,7 +125,7 @@ const DashboardPage: React.FC = () => {
     });
   };
 
-  const getTopSellingProduct = () => {
+  const getTopSellingProduct = (): { name: string; quantity: number; revenue: number } | null => {
     if (!dailySales || dailySales.orders.length === 0) return null;
     
     // Count products from all orders
@@ -149,7 +149,7 @@ const DashboardPage: React.FC = () => {
     });
     
     // Find the product with highest quantity
-    let topProduct = null;
+    let topProduct: { name: string; quantity: number; revenue: number } | null = null;
     let maxQuantity = 0;
     
     Object.values(productCount).forEach(product => {
@@ -297,7 +297,7 @@ const DashboardPage: React.FC = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Giá Trị TB/Đơn</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {dailySales?.totalOrders > 0 
+                  {dailySales && dailySales.totalOrders > 0 
                     ? formatCurrency(dailySales.totalRevenue / dailySales.totalOrders)
                     : formatCurrency(0)
                   }
@@ -372,7 +372,7 @@ const DashboardPage: React.FC = () => {
                       <div 
                         className="bg-indigo-500 h-2 rounded-full transition-all duration-500"
                         style={{ 
-                          width: `${dailySales?.totalRevenue > 0 
+                          width: `${dailySales && dailySales.totalRevenue > 0 
                             ? (hour.revenue / dailySales.totalRevenue) * 100 
                             : 0}%` 
                         }}
@@ -468,7 +468,7 @@ const DashboardPage: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Thao Tác Nhanh</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <button
-              onClick={() => navigate('/pos')}
+              onClick={() => navigate('/')}
               className="p-4 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors flex items-center justify-center space-x-2"
             >
               🛒

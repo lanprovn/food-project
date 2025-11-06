@@ -71,18 +71,19 @@ function AppRoutes() {
     <div className="min-h-screen w-full bg-gray-50 overflow-x-hidden">
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          {/* Redirect root to POS */}
-          <Route path="/" element={<Navigate to="/pos" replace />} />
+          {/* POS Layout - Main Page */}
+          <Route path="/" element={<POSLayoutNew />}>
+            <Route index element={<POSPage />} />
+          </Route>
+
+          {/* Product Detail */}
+          <Route path="/product/:id" element={<POSLayoutNew />}>
+            <Route index element={<ProductDetailPage />} />
+          </Route>
 
           {/* Order success */}
           <Route path="/order-success" element={<MainLayout />}>
             <Route index element={<OrderSuccessPage />} />
-          </Route>
-
-          {/* POS Layout */}
-          <Route path="/pos" element={<POSLayoutNew />}>
-            <Route index element={<POSPage />} />
-            <Route path=":id" element={<ProductDetailPage />} />
           </Route>
 
           {/* Checkout */}
@@ -101,7 +102,7 @@ function AppRoutes() {
           </Route>
 
           {/* Fallback */}
-          <Route path="*" element={<Navigate to="/pos" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
     </div>

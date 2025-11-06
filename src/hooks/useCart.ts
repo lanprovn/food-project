@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { CartContext } from '../context/CartContext.ts';
+import { CartContext } from '../context/CartContext.tsx';
 import type { CartContextType } from '../types/cart';
 
 /**

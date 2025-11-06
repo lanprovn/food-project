@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getStockAlerts, getOutOfStockProducts, markAlertAsRead } from '../../utils/stockManagement';
+import { getStockAlerts, markAlertAsRead } from '../../utils/stockManagement';
 import { getIngredientAlerts, markIngredientAlertAsRead } from '../../utils/ingredientManagement';
 import type { StockAlert } from '../../utils/stockManagement';
 import type { IngredientAlert } from '../../utils/ingredientManagement';

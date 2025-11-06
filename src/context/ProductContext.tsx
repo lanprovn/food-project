@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { ProductContextType, Product, Restaurant, Category, DiscountItem } from '../types/product';
-import { ProductContext } from './ProductContext';
 import productsData from '../assets/products.json';
+
+// Context definition
+export const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 interface ProductProviderProps {
   children: ReactNode;

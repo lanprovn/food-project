@@ -36,17 +36,16 @@ const POSPage: React.FC = () => {
     <div className="w-full">
       <StockInitializer />
       <StockAlertsPanel />
-      
+
       {/* Mobile Category Filter */}
       <div className="lg:hidden mb-6">
         <div className="flex overflow-x-auto pb-2">
           <button
             onClick={() => handleCategorySelect('all')}
-            className={`flex-shrink-0 px-4 py-2 rounded-full mr-2 transition-all duration-300 ${
-              selectedCategoryId === 'all'
-                ? 'bg-orange-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+            className={`flex-shrink-0 px-4 py-2 rounded-full mr-2 transition-all duration-300 ${selectedCategoryId === 'all'
+              ? 'bg-orange-500 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
           >
             Tất cả
           </button>
@@ -73,7 +72,7 @@ const POSPage: React.FC = () => {
           </button>
         </div>
       </div>
-      
+
       {/* Product Content */}
       {isLoading ? (
         <div className="text-center py-12">

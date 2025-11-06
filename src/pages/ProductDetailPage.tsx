@@ -87,7 +87,7 @@ const ProductDetailPage: React.FC = () => {
             Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
           </p>
           <button
-            onClick={() => navigate('/pos')}
+            onClick={() => navigate('/')}
             className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
           >
             Quay lại POS

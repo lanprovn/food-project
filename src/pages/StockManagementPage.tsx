@@ -40,14 +40,14 @@ const StockManagementPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
-    
+
     // Listen for stock updates
     const handleStockUpdate = () => {
       loadData();
     };
-    
+
     window.addEventListener('stockAlert', handleStockUpdate);
-    
+
     return () => {
       window.removeEventListener('stockAlert', handleStockUpdate);
     };
@@ -107,7 +107,7 @@ const StockManagementPage: React.FC = () => {
       setAdjustQuantity('');
       setAdjustReason('');
       setSelectedProduct(null);
-    } catch (error) {
+    } catch {
       toast.error('Lỗi khi nhập hàng');
     }
   };
@@ -132,7 +132,7 @@ const StockManagementPage: React.FC = () => {
       setAdjustQuantity('');
       setAdjustReason('');
       setSelectedProduct(null);
-    } catch (error) {
+    } catch {
       toast.error('Lỗi khi điều chỉnh tồn kho');
     }
   };
@@ -161,7 +161,7 @@ const StockManagementPage: React.FC = () => {
       setAdjustQuantity('');
       setAdjustReason('');
       setSelectedIngredient(null);
-    } catch (error) {
+    } catch {
       toast.error('Lỗi khi nhập nguyên liệu');
     }
   };
@@ -185,7 +185,7 @@ const StockManagementPage: React.FC = () => {
       setAdjustQuantity('');
       setAdjustReason('');
       setSelectedIngredient(null);
-    } catch (error) {
+    } catch {
       toast.error('Lỗi khi điều chỉnh nguyên liệu');
     }
   };
@@ -197,7 +197,7 @@ const StockManagementPage: React.FC = () => {
   const filteredStocks = stocks.filter(stock => {
     // Validate stock data
     if (!stock || !stock.productId) return false;
-    
+
     if (filter === 'low_stock') return stock.currentStock <= stock.minStock && stock.currentStock > 0;
     if (filter === 'out_of_stock') return stock.currentStock === 0;
     return true;
@@ -205,7 +205,7 @@ const StockManagementPage: React.FC = () => {
 
   const filteredIngredients = ingredients.filter(ingredient => {
     if (!ingredient || !ingredient.id) return false;
-    
+
     if (filter === 'low_stock') return ingredient.currentStock <= ingredient.minStock && ingredient.currentStock > 0;
     if (filter === 'out_of_stock') return ingredient.currentStock === 0;
     return true;
@@ -214,7 +214,7 @@ const StockManagementPage: React.FC = () => {
   const lowStockCount = getLowStockProducts().length;
   const outOfStockCount = getOutOfStockProducts().length;
   const unreadAlertsCount = alerts.filter(alert => !alert.isRead).length;
-  
+
   const ingredientStats = getIngredientStats();
   const unreadIngredientAlertsCount = ingredientAlerts.filter(alert => !alert.isRead).length;
 
@@ -323,41 +323,37 @@ const StockManagementPage: React.FC = () => {
             <nav className="flex space-x-8 px-6">
               <button
                 onClick={() => setActiveTab('stocks')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'stocks'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'stocks'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 📦 Tồn Kho ({stocks.length})
               </button>
               <button
                 onClick={() => setActiveTab('transactions')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'transactions'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'transactions'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 📋 Giao Dịch ({transactions.length})
               </button>
               <button
                 onClick={() => setActiveTab('alerts')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'alerts'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'alerts'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 🔔 Cảnh Báo ({unreadAlertsCount + unreadIngredientAlertsCount})
               </button>
               <button
                 onClick={() => setActiveTab('ingredients')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'ingredients'
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'ingredients'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 🥛 Nguyên Liệu ({ingredientStats.total})
               </button>
@@ -372,25 +368,22 @@ const StockManagementPage: React.FC = () => {
                   <div className="flex space-x-4">
                     <button
                       onClick={() => setFilter('all')}
-                      className={`px-4 py-2 rounded-lg ${
-                        filter === 'all' ? 'bg-indigo-500 text-white' : 'bg-gray-100 text-gray-700'
-                      }`}
+                      className={`px-4 py-2 rounded-lg ${filter === 'all' ? 'bg-indigo-500 text-white' : 'bg-gray-100 text-gray-700'
+                        }`}
                     >
                       Tất Cả
                     </button>
                     <button
                       onClick={() => setFilter('low_stock')}
-                      className={`px-4 py-2 rounded-lg ${
-                        filter === 'low_stock' ? 'bg-yellow-500 text-white' : 'bg-gray-100 text-gray-700'
-                      }`}
+                      className={`px-4 py-2 rounded-lg ${filter === 'low_stock' ? 'bg-yellow-500 text-white' : 'bg-gray-100 text-gray-700'
+                        }`}
                     >
                       Sắp Hết ({lowStockCount})
                     </button>
                     <button
                       onClick={() => setFilter('out_of_stock')}
-                      className={`px-4 py-2 rounded-lg ${
-                        filter === 'out_of_stock' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'
-                      }`}
+                      className={`px-4 py-2 rounded-lg ${filter === 'out_of_stock' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'
+                        }`}
                     >
                       Hết Hàng ({outOfStockCount})
                     </button>
@@ -410,7 +403,7 @@ const StockManagementPage: React.FC = () => {
                     const statusColor = getStockStatusColor(status);
                     const statusIcon = getStockStatusIcon(status);
                     const productInfo = getProductInfo(stock.productId);
-                    
+
                     return (
                       <div key={stock.productId} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
                         {/* Product Image */}
@@ -427,7 +420,7 @@ const StockManagementPage: React.FC = () => {
                             />
                           </div>
                         )}
-                        
+
                         <div className="p-4">
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex-1">
@@ -448,14 +441,13 @@ const StockManagementPage: React.FC = () => {
                               {statusIcon}
                             </span>
                           </div>
-                          
+
                           <div className="space-y-2 mb-4">
                             <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-600">Tồn kho:</span>
-                              <span className={`font-semibold text-lg ${
-                                status === 'out_of_stock' ? 'text-red-600' :
+                              <span className={`font-semibold text-lg ${status === 'out_of_stock' ? 'text-red-600' :
                                 status === 'low_stock' ? 'text-yellow-600' : 'text-green-600'
-                              }`}>
+                                }`}>
                                 {stock.currentStock} {stock.unit}
                               </span>
                             </div>
@@ -474,7 +466,7 @@ const StockManagementPage: React.FC = () => {
                               </span>
                             </div>
                           </div>
-                          
+
                           <div className="flex space-x-2">
                             <button
                               onClick={() => {
@@ -514,7 +506,7 @@ const StockManagementPage: React.FC = () => {
                     'adjustment': 'Điều chỉnh',
                     'return': 'Trả hàng'
                   };
-                  
+
                   return (
                     <div key={transaction.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
                       <div className="flex items-start space-x-4">
@@ -532,7 +524,7 @@ const StockManagementPage: React.FC = () => {
                             />
                           </div>
                         )}
-                        
+
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
@@ -545,11 +537,10 @@ const StockManagementPage: React.FC = () => {
                                 </p>
                               )}
                               <div className="flex items-center space-x-4 mt-2">
-                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  transaction.type === 'sale' ? 'bg-red-100 text-red-800' :
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${transaction.type === 'sale' ? 'bg-red-100 text-red-800' :
                                   transaction.type === 'purchase' ? 'bg-green-100 text-green-800' :
-                                  transaction.type === 'adjustment' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
-                                }`}>
+                                    transaction.type === 'adjustment' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
+                                  }`}>
                                   {transactionTypeLabels[transaction.type]}
                                 </span>
                                 <span className="text-sm text-gray-500">
@@ -562,11 +553,10 @@ const StockManagementPage: React.FC = () => {
                                 </p>
                               )}
                             </div>
-                            
+
                             <div className="text-right ml-4">
-                              <p className={`text-2xl font-bold ${
-                                transaction.quantity > 0 ? 'text-green-600' : 'text-red-600'
-                              }`}>
+                              <p className={`text-2xl font-bold ${transaction.quantity > 0 ? 'text-green-600' : 'text-red-600'
+                                }`}>
                                 {transaction.quantity > 0 ? '+' : ''}{transaction.quantity}
                               </p>
                               <p className="text-sm text-gray-500">
@@ -590,11 +580,10 @@ const StockManagementPage: React.FC = () => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">📦 Cảnh báo sản phẩm</h3>
                   {alerts.filter(alert => alert && alert.productId).map((alert) => {
                     const productInfo = getProductInfo(alert.productId);
-                    
+
                     return (
-                      <div key={alert.id} className={`rounded-lg p-4 border mb-4 ${
-                        alert.isRead ? 'bg-gray-50 border-gray-200' : 'bg-red-50 border-red-200'
-                      }`}>
+                      <div key={alert.id} className={`rounded-lg p-4 border mb-4 ${alert.isRead ? 'bg-gray-50 border-gray-200' : 'bg-red-50 border-red-200'
+                        }`}>
                         <div className="flex items-start space-x-4">
                           {/* Product Image */}
                           {productInfo?.image && (
@@ -610,19 +599,18 @@ const StockManagementPage: React.FC = () => {
                               />
                             </div>
                           )}
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                               <div className="flex-1">
                                 <div className="flex items-center space-x-3 mb-2">
                                   <span className="text-xl">
-                                    {alert.type === 'out_of_stock' ? '❌' : 
-                                     alert.type === 'low_stock' ? '⚠️' : '📦'}
+                                    {alert.type === 'out_of_stock' ? '❌' :
+                                      alert.type === 'low_stock' ? '⚠️' : '📦'}
                                   </span>
                                   <div>
-                                    <h4 className={`font-semibold text-lg ${
-                                      alert.isRead ? 'text-gray-700' : 'text-red-700'
-                                    }`}>
+                                    <h4 className={`font-semibold text-lg ${alert.isRead ? 'text-gray-700' : 'text-red-700'
+                                      }`}>
                                       {productInfo?.name || alert.productId || 'Unknown Product'}
                                     </h4>
                                     {productInfo && (
@@ -632,13 +620,11 @@ const StockManagementPage: React.FC = () => {
                                     )}
                                   </div>
                                 </div>
-                                
-                                <div className={`p-3 rounded-lg ${
-                                  alert.isRead ? 'bg-gray-100' : 'bg-red-100'
-                                }`}>
-                                  <p className={`font-medium ${
-                                    alert.isRead ? 'text-gray-700' : 'text-red-700'
+
+                                <div className={`p-3 rounded-lg ${alert.isRead ? 'bg-gray-100' : 'bg-red-100'
                                   }`}>
+                                  <p className={`font-medium ${alert.isRead ? 'text-gray-700' : 'text-red-700'
+                                    }`}>
                                     {alert.message}
                                   </p>
                                   <p className="text-sm text-gray-500 mt-1">
@@ -646,7 +632,7 @@ const StockManagementPage: React.FC = () => {
                                   </p>
                                 </div>
                               </div>
-                              
+
                               {!alert.isRead && (
                                 <button
                                   onClick={() => handleMarkAlertAsRead(alert.id)}
@@ -668,28 +654,26 @@ const StockManagementPage: React.FC = () => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">🥛 Cảnh báo nguyên liệu</h3>
                   {ingredientAlerts.filter(alert => alert && alert.ingredientId).map((alert) => {
                     const ingredient = ingredients.find(ing => ing.id === alert.ingredientId);
-                    
+
                     return (
-                      <div key={alert.id} className={`rounded-lg p-4 border mb-4 ${
-                        alert.isRead ? 'bg-gray-50 border-gray-200' : 'bg-orange-50 border-orange-200'
-                      }`}>
+                      <div key={alert.id} className={`rounded-lg p-4 border mb-4 ${alert.isRead ? 'bg-gray-50 border-gray-200' : 'bg-orange-50 border-orange-200'
+                        }`}>
                         <div className="flex items-start space-x-4">
                           <div className="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0">
                             <span className="text-xl">🥛</span>
                           </div>
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                               <div className="flex-1">
                                 <div className="flex items-center space-x-3 mb-2">
                                   <span className="text-xl">
-                                    {alert.type === 'out_of_stock' ? '❌' : 
-                                     alert.type === 'low_stock' ? '⚠️' : '📦'}
+                                    {alert.type === 'out_of_stock' ? '❌' :
+                                      alert.type === 'low_stock' ? '⚠️' : '📦'}
                                   </span>
                                   <div>
-                                    <h4 className={`font-semibold text-lg ${
-                                      alert.isRead ? 'text-gray-700' : 'text-orange-700'
-                                    }`}>
+                                    <h4 className={`font-semibold text-lg ${alert.isRead ? 'text-gray-700' : 'text-orange-700'
+                                      }`}>
                                       {ingredient?.name || alert.ingredientId || 'Unknown Ingredient'}
                                     </h4>
                                     {ingredient && (
@@ -699,13 +683,11 @@ const StockManagementPage: React.FC = () => {
                                     )}
                                   </div>
                                 </div>
-                                
-                                <div className={`p-3 rounded-lg ${
-                                  alert.isRead ? 'bg-gray-100' : 'bg-orange-100'
-                                }`}>
-                                  <p className={`font-medium ${
-                                    alert.isRead ? 'text-gray-700' : 'text-orange-700'
+
+                                <div className={`p-3 rounded-lg ${alert.isRead ? 'bg-gray-100' : 'bg-orange-100'
                                   }`}>
+                                  <p className={`font-medium ${alert.isRead ? 'text-gray-700' : 'text-orange-700'
+                                    }`}>
                                     {alert.message}
                                   </p>
                                   <p className="text-sm text-gray-500 mt-1">
@@ -713,7 +695,7 @@ const StockManagementPage: React.FC = () => {
                                   </p>
                                 </div>
                               </div>
-                              
+
                               {!alert.isRead && (
                                 <button
                                   onClick={() => handleMarkIngredientAlertAsRead(alert.id)}
@@ -739,25 +721,22 @@ const StockManagementPage: React.FC = () => {
                   <div className="flex space-x-4">
                     <button
                       onClick={() => setFilter('all')}
-                      className={`px-4 py-2 rounded-lg ${
-                        filter === 'all' ? 'bg-indigo-500 text-white' : 'bg-gray-100 text-gray-700'
-                      }`}
+                      className={`px-4 py-2 rounded-lg ${filter === 'all' ? 'bg-indigo-500 text-white' : 'bg-gray-100 text-gray-700'
+                        }`}
                     >
                       Tất Cả
                     </button>
                     <button
                       onClick={() => setFilter('low_stock')}
-                      className={`px-4 py-2 rounded-lg ${
-                        filter === 'low_stock' ? 'bg-yellow-500 text-white' : 'bg-gray-100 text-gray-700'
-                      }`}
+                      className={`px-4 py-2 rounded-lg ${filter === 'low_stock' ? 'bg-yellow-500 text-white' : 'bg-gray-100 text-gray-700'
+                        }`}
                     >
                       Sắp Hết ({ingredientStats.lowStock})
                     </button>
                     <button
                       onClick={() => setFilter('out_of_stock')}
-                      className={`px-4 py-2 rounded-lg ${
-                        filter === 'out_of_stock' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'
-                      }`}
+                      className={`px-4 py-2 rounded-lg ${filter === 'out_of_stock' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'
+                        }`}
                     >
                       Hết Hàng ({ingredientStats.outOfStock})
                     </button>
@@ -766,13 +745,13 @@ const StockManagementPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredIngredients.map((ingredient) => {
-                    const status = ingredient.currentStock === 0 ? 'out_of_stock' : 
-                                  ingredient.currentStock <= ingredient.minStock ? 'low_stock' : 'in_stock';
-                    const statusColor = status === 'out_of_stock' ? 'text-red-600' : 
-                                      status === 'low_stock' ? 'text-yellow-600' : 'text-green-600';
-                    const statusIcon = status === 'out_of_stock' ? '❌' : 
-                                     status === 'low_stock' ? '⚠️' : '✅';
-                    
+                    const status = ingredient.currentStock === 0 ? 'out_of_stock' :
+                      ingredient.currentStock <= ingredient.minStock ? 'low_stock' : 'in_stock';
+                    const statusColor = status === 'out_of_stock' ? 'text-red-600' :
+                      status === 'low_stock' ? 'text-yellow-600' : 'text-green-600';
+                    const statusIcon = status === 'out_of_stock' ? '❌' :
+                      status === 'low_stock' ? '⚠️' : '✅';
+
                     return (
                       <div key={ingredient.id} className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
                         <div className="p-4">
@@ -789,7 +768,7 @@ const StockManagementPage: React.FC = () => {
                               {statusIcon}
                             </span>
                           </div>
-                          
+
                           <div className="space-y-2 mb-4">
                             <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-600">Tồn kho:</span>
@@ -816,7 +795,7 @@ const StockManagementPage: React.FC = () => {
                               </span>
                             </div>
                           </div>
-                          
+
                           <div className="flex space-x-2">
                             <button
                               onClick={() => {
@@ -858,7 +837,7 @@ const StockManagementPage: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   {selectedProduct.currentStock === 0 ? 'Nhập Hàng' : 'Điều Chỉnh Tồn Kho'}
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                     {productInfo?.image && (
@@ -884,16 +863,15 @@ const StockManagementPage: React.FC = () => {
                         </p>
                       )}
                       <p className="text-sm text-gray-500 mt-1">
-                        Tồn kho hiện tại: <span className={`font-semibold ${
-                          selectedProduct.currentStock === 0 ? 'text-red-600' :
+                        Tồn kho hiện tại: <span className={`font-semibold ${selectedProduct.currentStock === 0 ? 'text-red-600' :
                           selectedProduct.currentStock <= selectedProduct.minStock ? 'text-yellow-600' : 'text-green-600'
-                        }`}>
+                          }`}>
                           {selectedProduct.currentStock} {selectedProduct.unit}
                         </span>
                       </p>
                     </div>
                   </div>
-                
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {selectedProduct.currentStock === 0 ? 'Số lượng nhập' : 'Số lượng mới'}
@@ -907,7 +885,7 @@ const StockManagementPage: React.FC = () => {
                       min="0"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Lý do (tùy chọn)
@@ -921,7 +899,7 @@ const StockManagementPage: React.FC = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex space-x-3 mt-6">
                   <button
                     onClick={() => {
@@ -953,7 +931,7 @@ const StockManagementPage: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   {selectedIngredient.currentStock === 0 ? 'Nhập Nguyên Liệu' : 'Điều Chỉnh Nguyên Liệu'}
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                     <div className="w-16 h-16 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0">
@@ -967,16 +945,15 @@ const StockManagementPage: React.FC = () => {
                         Đơn vị: {selectedIngredient.unit}
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
-                        Tồn kho hiện tại: <span className={`font-semibold ${
-                          selectedIngredient.currentStock === 0 ? 'text-red-600' :
+                        Tồn kho hiện tại: <span className={`font-semibold ${selectedIngredient.currentStock === 0 ? 'text-red-600' :
                           selectedIngredient.currentStock <= selectedIngredient.minStock ? 'text-yellow-600' : 'text-green-600'
-                        }`}>
+                          }`}>
                           {selectedIngredient.currentStock} {selectedIngredient.unit}
                         </span>
                       </p>
                     </div>
                   </div>
-                
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {selectedIngredient.currentStock === 0 ? 'Số lượng nhập' : 'Số lượng mới'}
@@ -990,7 +967,7 @@ const StockManagementPage: React.FC = () => {
                       min="0"
                     />
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Lý do (tùy chọn)
@@ -1004,7 +981,7 @@ const StockManagementPage: React.FC = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex space-x-3 mt-6">
                   <button
                     onClick={() => {

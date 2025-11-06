@@ -1,5 +1,5 @@
 import React from 'react';
-import { Product } from '../../types/product';
+import type { Product } from '../../types/product';
 import { formatPrice } from '../../utils/formatPrice';
 import { getProductStock, getStockStatus, getStockStatusColor, getStockStatusIcon } from '../../utils/stockManagement';
 
@@ -9,7 +9,7 @@ interface ProductCardWithStockProps {
 }
 
 const ProductCardWithStock: React.FC<ProductCardWithStockProps> = ({ product, onAddToCart }) => {
-  const stock = getProductStock(product.id);
+  const stock = getProductStock(String(product.id));
   const stockStatus = stock ? getStockStatus(stock) : 'in_stock';
   const statusColor = getStockStatusColor(stockStatus);
   const statusIcon = getStockStatusIcon(stockStatus);

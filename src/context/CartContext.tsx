@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { CartContextType, CartItem } from '../types/cart';
-import { CartContext } from './CartContext';
 import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useDisplaySync } from '../hooks/useDisplaySync';
+
+// Context definition
+export const CartContext = createContext<CartContextType | undefined>(undefined);
 
 interface CartProviderProps {
   children: ReactNode;

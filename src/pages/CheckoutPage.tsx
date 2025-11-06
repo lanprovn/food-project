@@ -4,6 +4,7 @@ import { formatPrice } from '../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
 import { deductStock } from '../utils/stockManagement';
 import { deductIngredientsForProduct } from '../utils/ingredientManagement';
+import toast from 'react-hot-toast';
 
 /**
  * Customer information interface
@@ -39,6 +40,7 @@ const CheckoutPage: React.FC = () => {
     notes: ''
   });
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   /**
    * Handle input changes for customer information form
@@ -61,10 +63,31 @@ const CheckoutPage: React.FC = () => {
   };
 
   /**
+   * Validate phone number format
+   * @param phone - Phone number to validate
+   * @returns true if valid, false otherwise
+   */
+  const validatePhone = (phone: string): boolean => {
+    // Vietnamese phone number format: 10-11 digits, may start with 0 or +84
+    const phoneRegex = /^(0|\+84)[1-9]\d{8,9}$/;
+    return phoneRegex.test(phone.replace(/\s/g, ''));
+  };
+
+  /**
    * Handle order completion
    * Processes payment and navigates to success page
    */
-  const handleCompleteOrder = (): void => {
+  const handleCompleteOrder = async (): Promise<void> => {
+    // Validate phone number
+    if (!validatePhone(customerInfo.phone)) {
+      toast.error('Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại 10-11 chữ số.');
+      return;
+    }
+
+    if (isProcessing) return;
+    
+    setIsProcessing(true);
+    
     // Mock order completion
     const paymentMethods: Record<PaymentMethod, string> = {
       'cash': 'Tiền mặt',
@@ -72,11 +95,11 @@ const CheckoutPage: React.FC = () => {
       'qr': 'Quét mã QR'
     };
     
-    // Generate order ID
-    const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
-    // Save order to daily sales
     try {
+      // Generate order ID
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Save order to daily sales
       const today = new Date().toISOString().split('T')[0];
       const storedData = localStorage.getItem(`dailySales_${today}`);
       
@@ -128,19 +151,36 @@ const CheckoutPage: React.FC = () => {
       window.dispatchEvent(new CustomEvent('orderCompleted', {
         detail: { orderId, total: totalPrice, items: items.length }
       }));
+      
+      // Update order status to paid and sync to display
+      updateOrderStatus('paid', {
+        name: customerInfo.name || 'Khách hàng',
+        table: customerInfo.table || undefined
+      }, paymentMethod, 'success');
+      
+      // Show success toast
+      toast.success(`Thanh toán ${paymentMethods[paymentMethod]} thành công!`, {
+        duration: 3000,
+        icon: '✅'
+      });
+      
+      // Small delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      clearCart();
+      navigate('/order-success', {
+        state: {
+          orderId,
+          paymentMethod,
+          customerName: customerInfo.name,
+          table: customerInfo.table
+        }
+      });
     } catch (error) {
       console.error('Error saving order to daily sales:', error);
+      toast.error('Có lỗi xảy ra khi xử lý đơn hàng. Vui lòng thử lại.');
+      setIsProcessing(false);
     }
-    
-    // Update order status to paid and sync to display
-    updateOrderStatus('paid', {
-      name: customerInfo.name || 'Khách hàng',
-      table: customerInfo.table || undefined
-    }, paymentMethod, 'success');
-    
-    alert(`Thanh toán ${paymentMethods[paymentMethod]} thành công!`);
-    clearCart();
-    navigate('/order-success');
   };
 
   return (
@@ -253,8 +293,27 @@ const CheckoutPage: React.FC = () => {
                   value={customerInfo.phone}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
-                  placeholder="Nhập số điện thoại"
+                  placeholder="Nhập số điện thoại (VD: 0912345678)"
                   required
+                  pattern="[0-9]{10,11}"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Ví dụ: 0912345678 hoặc 0123456789
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="table" className="block text-sm font-semibold text-gray-800">
+                  Số bàn
+                </label>
+                <input
+                  type="text"
+                  id="table"
+                  name="table"
+                  value={customerInfo.table}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors"
+                  placeholder="Nhập số bàn (tùy chọn)"
                 />
               </div>
               
@@ -328,12 +387,24 @@ const CheckoutPage: React.FC = () => {
           <div className="text-center">
             <button
               onClick={handleCompleteOrder}
-              disabled={!customerInfo.name || !customerInfo.phone || items.length === 0}
-              className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors shadow-md hover:shadow-lg flex items-center justify-center space-x-2 mx-auto"
+              disabled={!customerInfo.name || !customerInfo.phone || items.length === 0 || isProcessing}
+              className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors shadow-md hover:shadow-lg flex items-center justify-center space-x-2 mx-auto min-w-[200px]"
             >
-              <span>✓</span>
-              <span>Hoàn tất đơn hàng</span>
-              <span className="opacity-80">({formatPrice(totalPrice)})</span>
+              {isProcessing ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Đang xử lý...</span>
+                </>
+              ) : (
+                <>
+                  <span>✓</span>
+                  <span>Hoàn tất đơn hàng</span>
+                  <span className="opacity-80">({formatPrice(totalPrice)})</span>
+                </>
+              )}
             </button>
           </div>
         </div>
