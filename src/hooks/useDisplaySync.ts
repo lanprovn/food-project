@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import type { CartItem } from '../types/cart';
 import type { DisplayData, DisplaySyncMessage, UseDisplaySyncReturn } from '../types/display';
 
@@ -11,7 +11,19 @@ const DISPLAY_STORAGE_KEY = 'ocha_display_data';
  */
 export function useDisplaySync(): UseDisplaySyncReturn {
   // Tạo BroadcastChannel để giao tiếp giữa các tab
-  const channel = useMemo(() => new BroadcastChannel(DISPLAY_CHANNEL_NAME), []);
+  // Sử dụng ref để tránh recreate channel mỗi lần render
+  const channelRef = useRef<BroadcastChannel | null>(null);
+  
+  if (!channelRef.current) {
+    try {
+      channelRef.current = new BroadcastChannel(DISPLAY_CHANNEL_NAME);
+    } catch (error) {
+      console.warn('Failed to create BroadcastChannel:', error);
+      channelRef.current = null;
+    }
+  }
+  
+  const channel = channelRef.current;
 
   /**
    * Gửi dữ liệu giỏ hàng đến Customer Display
@@ -51,7 +63,14 @@ export function useDisplaySync(): UseDisplaySyncReturn {
       };
       
       console.log('📤 Sending to display via BroadcastChannel:', message);
-      channel.postMessage(message);
+      // Check if channel is available before posting message
+      if (channel) {
+        try {
+          channel.postMessage(message);
+        } catch (error) {
+          console.warn('Failed to post message to channel:', error);
+        }
+      }
 
       // Backup vào localStorage (fallback)
       localStorage.setItem(DISPLAY_STORAGE_KEY, JSON.stringify(displayData));
@@ -102,7 +121,9 @@ export function useDisplaySync(): UseDisplaySyncReturn {
 
     // Lắng nghe BroadcastChannel
     try {
-      channel.addEventListener('message', handleMessage);
+      if (channel) {
+        channel.addEventListener('message', handleMessage);
+      }
     } catch (error) {
       console.warn('Failed to add message listener:', error);
     }
@@ -186,7 +207,9 @@ export function useDisplaySync(): UseDisplaySyncReturn {
     // Cleanup function
     return () => {
       try {
-        channel.removeEventListener('message', handleMessage);
+        if (channel) {
+          channel.removeEventListener('message', handleMessage);
+        }
       } catch (error) {
         console.warn('Failed to remove message listener:', error);
       }
@@ -202,12 +225,14 @@ export function useDisplaySync(): UseDisplaySyncReturn {
   useEffect(() => {
     return () => {
       try {
-        channel.close();
+        if (channelRef.current) {
+          channelRef.current.close();
+        }
       } catch (error) {
         console.warn('Failed to close channel:', error);
       }
     };
-  }, [channel]);
+  }, []);
 
   return {
     sendToDisplay,

@@ -24,4 +24,5 @@ export interface CartContextType {
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
   updateOrderStatus: (status: 'creating' | 'confirmed' | 'paid' | 'completed', customerInfo?: { name?: string; table?: string }, paymentMethod?: 'cash' | 'card' | 'qr', paymentStatus?: 'success' | 'pending' | 'failed') => void;
+  setOrderCreator: (creator: { type: 'staff' | 'customer'; name?: string } | null) => void;
 }

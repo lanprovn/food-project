@@ -9,6 +9,7 @@ interface OrderSummary {
   total: number;
   items: number;
   customerName?: string;
+  paymentMethod?: 'cash' | 'card' | 'qr';
   products?: {
     name: string;
     quantity: number;
@@ -41,6 +42,33 @@ const DashboardPage: React.FC = () => {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  // Check if date changed and auto-reset
+  useEffect(() => {
+    const checkDateChange = () => {
+      const today = new Date().toISOString().split('T')[0];
+      const lastDate = localStorage.getItem('dashboard_last_date');
+      
+      if (lastDate && lastDate !== today) {
+        // Date changed, load new day's data
+        loadDailySales();
+        toast.success('Đã chuyển sang ngày mới!', {
+          duration: 2000,
+          position: 'top-right',
+        });
+      }
+      
+      localStorage.setItem('dashboard_last_date', today);
+    };
+
+    // Check on mount
+    checkDateChange();
+    
+    // Check every minute
+    const dateCheckInterval = setInterval(checkDateChange, 60000);
+    
+    return () => clearInterval(dateCheckInterval);
   }, []);
 
   // Load daily sales data
@@ -125,8 +153,8 @@ const DashboardPage: React.FC = () => {
     });
   };
 
-  const getTopSellingProduct = (): { name: string; quantity: number; revenue: number } | null => {
-    if (!dailySales || dailySales.orders.length === 0) return null;
+  const getTopSellingProducts = (limit: number = 5): Array<{ name: string; quantity: number; revenue: number }> => {
+    if (!dailySales || dailySales.orders.length === 0) return [];
     
     // Count products from all orders
     const productCount: { [key: string]: { name: string; quantity: number; revenue: number } } = {};
@@ -136,7 +164,7 @@ const DashboardPage: React.FC = () => {
         order.products.forEach(product => {
           if (productCount[product.name]) {
             productCount[product.name].quantity += product.quantity;
-            productCount[product.name].revenue += product.price;
+            productCount[product.name].revenue += product.price; // product.price là totalPrice của item đó
           } else {
             productCount[product.name] = {
               name: product.name,
@@ -148,18 +176,15 @@ const DashboardPage: React.FC = () => {
       }
     });
     
-    // Find the product with highest quantity
-    let topProduct: { name: string; quantity: number; revenue: number } | null = null;
-    let maxQuantity = 0;
-    
-    Object.values(productCount).forEach(product => {
-      if (product.quantity > maxQuantity) {
-        maxQuantity = product.quantity;
-        topProduct = product;
-      }
-    });
-    
-    return topProduct;
+    // Sort by quantity descending and return top N
+    return Object.values(productCount)
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, limit);
+  };
+
+  const getTopSellingProduct = (): { name: string; quantity: number; revenue: number } | null => {
+    const topProducts = getTopSellingProducts(1);
+    return topProducts.length > 0 ? topProducts[0] : null;
   };
 
   const getHourlyRevenue = () => {
@@ -179,6 +204,15 @@ const DashboardPage: React.FC = () => {
   };
 
   const resetDailyData = () => {
+    const confirmed = window.confirm(
+      'Bạn có chắc chắn muốn reset dữ liệu hôm nay?\n\n' +
+      `Tổng doanh thu: ${formatCurrency(dailySales?.totalRevenue || 0)}\n` +
+      `Tổng đơn hàng: ${dailySales?.totalOrders || 0}\n\n` +
+      'Hành động này không thể hoàn tác!'
+    );
+    
+    if (!confirmed) return;
+    
     const today = new Date().toISOString().split('T')[0];
     const emptyData: DailySales = {
       date: today,
@@ -188,6 +222,45 @@ const DashboardPage: React.FC = () => {
     };
     setDailySales(emptyData);
     localStorage.setItem(`dailySales_${today}`, JSON.stringify(emptyData));
+    toast.success('Đã reset dữ liệu hôm nay', {
+      duration: 2000,
+      position: 'top-right',
+    });
+  };
+
+  const getPaymentMethodStats = () => {
+    if (!dailySales || dailySales.orders.length === 0) return {};
+    
+    const stats: { [key: string]: { count: number; revenue: number } } = {};
+    
+    dailySales.orders.forEach(order => {
+      const method = order.paymentMethod;
+      if (method) {
+        if (!stats[method]) {
+          stats[method] = { count: 0, revenue: 0 };
+        }
+        stats[method].count += 1;
+        stats[method].revenue += order.total;
+      }
+    });
+    
+    return stats;
+  };
+
+  const getYesterdayData = (): DailySales | null => {
+    try {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      const storedData = localStorage.getItem(`dailySales_${yesterdayStr}`);
+      
+      if (storedData) {
+        return JSON.parse(storedData);
+      }
+    } catch (error) {
+      console.error('Error loading yesterday data:', error);
+    }
+    return null;
   };
 
   if (isLoading) {
@@ -261,6 +334,20 @@ const DashboardPage: React.FC = () => {
                 <p className="text-3xl font-bold text-gray-900">
                   {formatCurrency(dailySales?.totalRevenue || 0)}
                 </p>
+                {(() => {
+                  const yesterdayData = getYesterdayData();
+                  if (yesterdayData && yesterdayData.totalRevenue > 0) {
+                    const todayRevenue = dailySales?.totalRevenue || 0;
+                    const diff = todayRevenue - yesterdayData.totalRevenue;
+                    const percentChange = ((diff / yesterdayData.totalRevenue) * 100).toFixed(1);
+                    return (
+                      <p className={`text-xs mt-1 ${diff >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {diff >= 0 ? '↑' : '↓'} {Math.abs(Number(percentChange))}% so với hôm qua
+                      </p>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
               <div className="p-3 bg-green-100 rounded-full">
                 💰
@@ -459,6 +546,112 @@ const DashboardPage: React.FC = () => {
                   <p className="text-gray-500">Chưa có đơn hàng nào hôm nay</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+
+        {/* Top Products & Payment Stats */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+          {/* Top 5 Products */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Top 5 Sản Phẩm Bán Chạy</h3>
+            <div className="space-y-3">
+              {getTopSellingProducts(5).length > 0 ? (
+                getTopSellingProducts(5).map((product, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3 flex-1">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+                        index === 0 ? 'bg-yellow-500' :
+                        index === 1 ? 'bg-gray-400' :
+                        index === 2 ? 'bg-orange-600' :
+                        'bg-gray-300'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-800">{product.name}</p>
+                        <p className="text-xs text-gray-600">
+                          {product.quantity} đơn • {formatCurrency(product.revenue)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-bold text-gray-900">
+                        {formatCurrency(product.revenue)}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {dailySales && dailySales.totalRevenue > 0
+                          ? `${((product.revenue / dailySales.totalRevenue) * 100).toFixed(1)}%`
+                          : '0%'}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-2">📦</div>
+                  <p className="text-gray-500 text-sm">Chưa có dữ liệu</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Payment Method Stats */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Thống Kê Thanh Toán</h3>
+            <div className="space-y-3">
+              {(() => {
+                const paymentStats = getPaymentMethodStats();
+                const paymentMethods = [
+                  { key: 'cash', label: 'Tiền mặt', icon: '💵', color: 'bg-green-500' },
+                  { key: 'card', label: 'Thẻ ngân hàng', icon: '💳', color: 'bg-blue-500' },
+                  { key: 'qr', label: 'QR Code', icon: '📱', color: 'bg-purple-500' }
+                ];
+                
+                if (Object.keys(paymentStats).length === 0) {
+                  return (
+                    <div className="text-center py-8">
+                      <div className="text-4xl mb-2">💳</div>
+                      <p className="text-gray-500 text-sm">Chưa có dữ liệu thanh toán</p>
+                    </div>
+                  );
+                }
+
+                return paymentMethods.map((method) => {
+                  const stats = paymentStats[method.key];
+                  if (!stats) return null;
+                  
+                  const totalRevenue = dailySales?.totalRevenue || 1;
+                  const percentage = ((stats.revenue / totalRevenue) * 100).toFixed(1);
+                  
+                  return (
+                    <div key={method.key} className="p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xl">{method.icon}</span>
+                          <span className="font-semibold text-gray-800">{method.label}</span>
+                        </div>
+                        <span className="text-sm font-bold text-gray-900">
+                          {formatCurrency(stats.revenue)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 mx-2">
+                          <div className="bg-gray-200 rounded-full h-2">
+                            <div 
+                              className={`${method.color} h-2 rounded-full transition-all duration-500`}
+                              style={{ width: `${percentage}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div className="text-xs text-gray-600 w-20 text-right">
+                          {stats.count} đơn ({percentage}%)
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }).filter(Boolean);
+              })()}
             </div>
           </div>
         </div>

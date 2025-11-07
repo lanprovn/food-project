@@ -14,15 +14,15 @@ import { IngredientProvider } from '../context/IngredientContext';
 // ===== Lazy load layouts =====
 const MainLayout = lazy(() => import('../components/layout/MainLayout'));
 const POSLayoutNew = lazy(() => import('../components/layout/POSLayoutNew'));
+const CustomerDisplayLayout = lazy(() => import('../components/layout/CustomerDisplayLayout'));
 
 // ===== Lazy load pages =====
-const POSPage = lazy(() => import('../pages/POSPage'));
 const ProductDetailPage = lazy(() => import('../pages/ProductDetailPage'));
 const CheckoutPage = lazy(() => import('../pages/CheckoutPage'));
 const OrderSuccessPage = lazy(() => import('../pages/OrderSuccessPage'));
-const CustomerDisplayPage = lazy(() => import('../pages/CustomerDisplayPage'));
 const DashboardPage = lazy(() => import('../pages/DashboardPage'));
 const StockManagementPage = lazy(() => import('../pages/StockManagementPage'));
+const OrderDisplayPage = lazy(() => import('../pages/OrderDisplayPage'));
 
 // ===== Loader Component =====
 const PageLoader = () => (
@@ -52,15 +52,17 @@ function LayoutReset() {
  */
 function AppRoutes() {
   const location = useLocation();
-  const isDisplayPage = location.pathname.startsWith('/display');
+  const isDisplayPage = location.pathname.startsWith('/customer');
 
-  // === CASE 1: Customer Display (full screen, no wrapper) ===
+  // === CASE 1: Customer Display (with layout like POS) ===
   if (isDisplayPage) {
     return (
       <Suspense fallback={<PageLoader />}>
         <Routes>
-          <Route path="/display" element={<CustomerDisplayPage />} />
-          <Route path="*" element={<Navigate to="/display" replace />} />
+          <Route path="/customer" element={<CustomerDisplayLayout />}>
+            {/* Layout tự render ProductGrid khi pathname === '/customer' */}
+          </Route>
+          <Route path="*" element={<Navigate to="/customer" replace />} />
         </Routes>
       </Suspense>
     );
@@ -73,7 +75,7 @@ function AppRoutes() {
         <Routes>
           {/* POS Layout - Main Page */}
           <Route path="/" element={<POSLayoutNew />}>
-            <Route index element={<POSPage />} />
+            {/* Layout tự render ProductGrid khi pathname === '/' */}
           </Route>
 
           {/* Product Detail */}
@@ -100,6 +102,9 @@ function AppRoutes() {
           <Route path="/stock-management" element={<MainLayout />}>
             <Route index element={<StockManagementPage />} />
           </Route>
+
+          {/* Order Display */}
+          <Route path="/orders" element={<OrderDisplayPage />} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -128,6 +133,10 @@ const AppRouter: React.FC = () => {
                   background: '#363636',
                   color: '#fff',
                 },
+              }}
+              containerStyle={{
+                top: 20,
+                right: 20,
               }}
             />
           </IngredientProvider>

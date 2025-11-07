@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useCart } from '../hooks/useCart';
+import { useOrderTracking } from '../hooks/useOrderTracking';
 import { formatPrice } from '../utils/formatPrice';
 import { useNavigate } from 'react-router-dom';
 import { deductStock } from '../utils/stockManagement';
 import { deductIngredientsForProduct } from '../utils/ingredientManagement';
 import toast from 'react-hot-toast';
+import type { OrderTracking } from '../types/display';
 
 /**
  * Customer information interface
@@ -32,6 +34,7 @@ type PaymentMethod = 'cash' | 'card' | 'qr';
  */
 const CheckoutPage: React.FC = () => {
   const { items, totalPrice, clearCart, updateOrderStatus } = useCart();
+  const { updateOrderStatus: updateOrderTrackingStatus } = useOrderTracking();
   const navigate = useNavigate();
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
     name: '',
@@ -122,6 +125,7 @@ const CheckoutPage: React.FC = () => {
         total: totalPrice,
         items: items.length,
         customerName: customerInfo.name || 'Khách hàng',
+        paymentMethod: paymentMethod, // Lưu payment method vào order
         products: items.map(item => ({
           name: item.name,
           quantity: item.quantity,
@@ -157,6 +161,33 @@ const CheckoutPage: React.FC = () => {
         name: customerInfo.name || 'Khách hàng',
         table: customerInfo.table || undefined
       }, paymentMethod, 'success');
+      
+      // Update order tracking status
+      // Tìm order tracking ID từ localStorage - tìm order đang được tạo từ cùng session
+      const trackingStored = localStorage.getItem('ocha_order_tracking_data');
+      if (trackingStored) {
+        const trackingOrders = JSON.parse(trackingStored) as OrderTracking[];
+        // Tìm order đang được tạo (status: creating) và có items giống với cart hiện tại
+        const currentOrder = trackingOrders.find((o: OrderTracking) => 
+          o.status === 'creating' && 
+          o.items.length === items.length &&
+          o.totalPrice === totalPrice
+        );
+        if (currentOrder) {
+          updateOrderTrackingStatus(
+            currentOrder.id,
+            'paid',
+            orderId,
+            paymentMethod,
+            'success',
+            {
+              name: customerInfo.name || 'Khách hàng',
+              table: customerInfo.table || undefined,
+              phone: customerInfo.phone || undefined
+            }
+          );
+        }
+      }
       
       // Show success toast
       toast.success(`Thanh toán ${paymentMethods[paymentMethod]} thành công!`, {

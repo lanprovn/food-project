@@ -4,6 +4,7 @@ import type { CartContextType, CartItem } from '../types/cart';
 import toast from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useDisplaySync } from '../hooks/useDisplaySync';
+import { useOrderTracking } from '../hooks/useOrderTracking';
 
 // Context definition
 export const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -15,9 +16,11 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [orderCreator, setOrderCreator] = useState<{ type: 'staff' | 'customer'; name?: string } | null>(null);
   
   // Real-time display sync
   const { sendToDisplay } = useDisplaySync();
+  const { sendOrderUpdate } = useOrderTracking();
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -45,9 +48,24 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     
     // Always sync to display, even when cart is empty
     sendToDisplay(items, totalPrice, totalItems, 'creating');
-  }, [items, sendToDisplay]);
+    
+    // Send order tracking update if order creator is set
+    if (orderCreator && items.length > 0) {
+      sendOrderUpdate(
+        items,
+        totalPrice,
+        totalItems,
+        orderCreator.type,
+        orderCreator.name,
+        undefined // customerInfo sẽ được set khi checkout
+      );
+    }
+  }, [items, sendToDisplay, sendOrderUpdate, orderCreator]);
 
   const addToCart = (item: Omit<CartItem, 'id'>) => {
+    // Create unique toast ID based on product details to prevent duplicates
+    const toastId = `add-${item.productId}-${item.selectedSize?.name || 'default'}-${JSON.stringify(item.selectedToppings)}`;
+    
     setItems(prevItems => {
       const existing = prevItems.find(
         (i) =>
@@ -66,13 +84,21 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
               }
             : i
         );
-        // Move toast outside of setState callback
-        setTimeout(() => toast.success(`Đã cập nhật số lượng ${item.name}!`), 0);
+        // Use toast id to prevent duplicate notifications
+        setTimeout(() => {
+          toast.success(`Đã cập nhật số lượng ${item.name}!`, {
+            id: `update-${item.productId}-${item.selectedSize?.name || 'default'}`
+          });
+        }, 0);
         return updatedItems;
       } else {
         const newItem = { ...item, id: uuidv4() };
-        // Move toast outside of setState callback
-        setTimeout(() => toast.success(`Đã thêm ${item.name} vào giỏ hàng!`), 0);
+        // Use toast id to prevent duplicate notifications - same ID will replace previous toast
+        setTimeout(() => {
+          toast.success(`Đã thêm ${item.name} vào giỏ hàng!`, {
+            id: toastId // Same ID prevents duplicate
+          });
+        }, 0);
         return [...prevItems, newItem];
       }
     });
@@ -83,8 +109,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
       const item = prevItems.find(item => item.id === id);
       const newItems = prevItems.filter(item => item.id !== id);
       if (item) {
-        // Move toast outside of setState callback
-        setTimeout(() => toast.success(`Đã xóa ${item.name} khỏi giỏ hàng!`), 0);
+        // Use toast id to prevent duplicate notifications
+        setTimeout(() => {
+          toast.success(`Đã xóa ${item.name} khỏi giỏ hàng!`, {
+            id: `remove-${id}` // Unique ID for this toast
+          });
+        }, 0);
       }
       return newItems;
     });
@@ -92,7 +122,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const updateQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(id);
+      // Remove item silently when quantity reaches 0 (no toast)
+      // Toast will only show when user explicitly clicks remove button
+      setItems(prevItems => prevItems.filter(item => item.id !== id));
       return;
     }
 
@@ -136,6 +168,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     isCartOpen,
     setIsCartOpen,
     updateOrderStatus,
+    setOrderCreator,
   };
 
   return (

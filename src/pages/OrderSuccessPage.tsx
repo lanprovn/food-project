@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
+import { useOrderTracking } from '../hooks/useOrderTracking';
 import { formatPrice } from '../utils/formatPrice';
+import type { OrderTracking } from '../types/display';
 
 interface OrderDetails {
   id: string;
@@ -30,6 +32,7 @@ const OrderSuccessPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { updateOrderStatus } = useCart();
+  const { updateOrderStatus: updateOrderTrackingStatus } = useOrderTracking();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'qr' | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,24 +43,24 @@ const OrderSuccessPage: React.FC = () => {
       try {
         const today = new Date().toISOString().split('T')[0];
         const storedData = localStorage.getItem(`dailySales_${today}`);
-        
+
         if (storedData) {
           const dailySales = JSON.parse(storedData);
           const orders = dailySales.orders || [];
-          
+
           // Get the most recent order (last in array)
           if (orders.length > 0) {
             const latestOrder = orders[orders.length - 1];
             setOrderDetails(latestOrder);
           }
         }
-        
+
         // Get payment method from location state if available
         const state = location.state as LocationState | null;
         if (state?.paymentMethod) {
           setPaymentMethod(state.paymentMethod);
         }
-        
+
         setIsLoading(false);
       } catch (error) {
         console.error('Error loading order details:', error);
@@ -68,10 +71,29 @@ const OrderSuccessPage: React.FC = () => {
     loadOrderDetails();
   }, [location.state]);
 
-  // Send completed status to display when page loads
+  // Update order tracking status to completed when page loads
   useEffect(() => {
     updateOrderStatus('completed');
-  }, [updateOrderStatus]);
+
+    // Update order tracking status to completed
+    const state = location.state as LocationState | null;
+    if (state?.orderId) {
+      const trackingStored = localStorage.getItem('ocha_order_tracking_data');
+      if (trackingStored) {
+        const trackingOrders = JSON.parse(trackingStored) as OrderTracking[];
+        const order = trackingOrders.find((o: OrderTracking) => o.orderId === state.orderId);
+        if (order) {
+          updateOrderTrackingStatus(
+            order.id,
+            'completed',
+            state.orderId,
+            state.paymentMethod,
+            'success'
+          );
+        }
+      }
+    }
+  }, [updateOrderStatus, updateOrderTrackingStatus, location.state]);
 
   const formatOrderTime = (timestamp: number): string => {
     const date = new Date(timestamp);
@@ -122,18 +144,18 @@ const OrderSuccessPage: React.FC = () => {
           <div className="relative">
             <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
             <div className="relative bg-green-500 rounded-full p-6 shadow-lg">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-16 w-16 text-white animate-scale-in" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-white animate-scale-in"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={3} 
-                  d="M5 13l4 4L19 7" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={3}
+                  d="M5 13l4 4L19 7"
                 />
               </svg>
             </div>
@@ -251,7 +273,7 @@ const OrderSuccessPage: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <button 
+          <button
             onClick={handleNewOrder}
             className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
@@ -260,7 +282,7 @@ const OrderSuccessPage: React.FC = () => {
             </svg>
             <span>Tạo đơn mới</span>
           </button>
-          <button 
+          <button
             onClick={handleGoHome}
             className="bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 px-8 rounded-lg transition-all duration-200 border-2 border-gray-300 hover:border-gray-400 flex items-center justify-center gap-2"
           >
