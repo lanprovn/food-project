@@ -16,16 +16,18 @@
 
 ### ✨ Tính năng nổi bật
 
-- 🎯 **Giao diện hiện đại**: Thiết kế responsive với green tone professional
+- 🎯 **Giao diện hiện đại**: Thiết kế responsive với animations và transitions mượt mà
 - 🛒 **Quản lý giỏ hàng**: Thêm/sửa/xóa sản phẩm dễ dàng với real-time sync
 - 📱 **Responsive Design**: Hoạt động tốt trên desktop, tablet và mobile
-- 🏷️ **Quản lý danh mục**: Phân loại sản phẩm theo category
+- 🏷️ **Quản lý danh mục**: Phân loại sản phẩm theo category với filtering
 - 💳 **Thanh toán đa dạng**: Hỗ trợ tiền mặt, thẻ, QR code
 - 📊 **Dashboard Doanh Thu**: Theo dõi doanh thu hàng ngày với real-time updates
-- 📦 **Quản lý kho**: Hệ thống quản lý tồn kho hoàn chỉnh với cảnh báo
+- 📦 **Quản lý kho**: Hệ thống quản lý tồn kho hoàn chỉnh với cảnh báo và transactions
 - 🖥️ **Customer Display**: Màn hình hiển thị cho khách hàng với real-time updates
+- 📡 **Order Tracking**: Theo dõi đơn hàng real-time giữa nhân viên và khách hàng
+- 🔍 **Tìm kiếm & Lọc**: Tìm kiếm sản phẩm và lọc theo danh mục
 - ⚡ **Tốc độ cao**: Sử dụng Vite và lazy loading
-- 🔄 **Real-time Sync**: Đồng bộ dữ liệu giữa POS và Customer Display
+- 🔄 **Real-time Sync**: Đồng bộ dữ liệu giữa POS và Customer Display qua BroadcastChannel
 
 ## 🚀 Cài đặt và Chạy
 
@@ -66,17 +68,58 @@ npm run build
 ```
 src/
 ├── components/          # Components React
-│   ├── layout/          # Layout components (MainLayout, POSLayoutNew)
-│   ├── pos/             # POS-specific components (CartPanel, ProductCard, etc.)
-│   ├── shared/          # Shared components (ButtonFilled, ErrorBoundary, etc.)
-│   └── ui/              # UI components (Toast)
-├── context/             # React Context providers (CartContext, ProductContext)
-├── hooks/               # Custom React hooks (useCart, useDisplaySync, useProducts)
-├── pages/               # Page components (POSPage, CheckoutPage, DashboardPage, etc.)
-├── router/              # Routing configuration (AppRouter)
-├── types/               # TypeScript type definitions (cart, display, product)
-├── utils/               # Utility functions (formatPrice, stockManagement)
-└── assets/              # Static assets (images, CSS, JSON data)
+│   ├── layout/          # Layout components
+│   │   ├── MainLayout.tsx
+│   │   ├── POSLayoutNew.tsx
+│   │   └── CustomerDisplayLayout.tsx
+│   ├── pos/             # POS-specific components
+│   │   ├── CartPanel.tsx
+│   │   ├── ProductCard.tsx
+│   │   ├── ProductGrid.tsx
+│   │   ├── ProductModal.tsx
+│   │   ├── SidebarCategory.tsx
+│   │   └── SidebarCategoryCustomer.tsx
+│   ├── stock/           # Stock management components
+│   │   ├── StockAdjustModal.tsx
+│   │   ├── EmptyState.tsx
+│   │   └── SearchBar.tsx
+│   ├── shared/          # Shared components
+│   │   ├── ButtonFilled.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── InputField.tsx
+│   │   ├── StockAlertsPanel.tsx
+│   │   └── StockInitializer.tsx
+│   └── ui/              # UI components
+│       └── Toast.tsx
+├── context/             # React Context providers
+│   ├── CartContext.tsx
+│   ├── ProductContext.tsx
+│   └── IngredientContext.tsx
+├── hooks/               # Custom React hooks
+│   ├── useCart.ts
+│   ├── useProducts.ts
+│   ├── useDisplaySync.ts
+│   └── useOrderTracking.ts
+├── pages/               # Page components
+│   ├── CheckoutPage.tsx
+│   ├── DashboardPage.tsx
+│   ├── OrderDisplayPage.tsx
+│   ├── OrderSuccessPage.tsx
+│   ├── ProductDetailPage.tsx
+│   └── StockManagementPage.tsx
+├── router/              # Routing configuration
+│   └── AppRouter.tsx
+├── types/               # TypeScript type definitions
+│   ├── cart.ts
+│   ├── display.ts
+│   └── product.ts
+├── utils/               # Utility functions
+│   ├── formatPrice.ts
+│   ├── stockManagement.ts
+│   └── ingredientManagement.ts
+└── assets/              # Static assets
+    ├── img/
+    └── data/
 ```
 
 ## 🎨 Công nghệ sử dụng
@@ -85,7 +128,7 @@ src/
 - **React 19.1.1** - UI Framework
 - **TypeScript 5.9.3** - Type safety
 - **Tailwind CSS 4.1.14** - Styling
-- **React Router** - Client-side routing
+- **React Router 7.9.4** - Client-side routing
 - **React Hot Toast** - Notifications
 - **Lucide React** - Icon library
 
@@ -99,89 +142,128 @@ src/
 - **React Context API** - Global state management
 - **Custom Hooks** - Local state management
 - **localStorage** - Data persistence
-- **Custom Events** - Real-time communication
+- **BroadcastChannel API** - Real-time cross-tab communication
+- **Custom Events** - Real-time in-tab communication
 
 ## 📱 Chức năng chính
 
-### 🛒 Hệ thống POS (`/pos`)
+### 🛒 Hệ thống POS (`/`)
 - **Danh sách sản phẩm**: Hiển thị sản phẩm theo danh mục với sidebar navigation
-- **Chi tiết sản phẩm**: Modal hiển thị thông tin chi tiết, chọn size, topping
+- **Chi tiết sản phẩm**: Modal hiển thị thông tin chi tiết, chọn size, topping, ghi chú
 - **Giỏ hàng**: Panel bên phải với thêm/sửa/xóa sản phẩm, tính tổng tiền
 - **Real-time sync**: Đồng bộ dữ liệu với Customer Display ngay lập tức
-- **Stock Alerts**: Hiển thị cảnh báo tồn kho thấp/ hết hàng
-- **Stock Management**: Quản lý tồn kho trực tiếp từ POS
+- **Stock Alerts**: Hiển thị cảnh báo tồn kho thấp/hết hàng
+- **Animations**: Hover effects, transitions mượt mà
+- **Responsive**: Tối ưu cho mọi kích thước màn hình
 
-### 📊 Dashboard Doanh Thu (`/dashboard`)
-- **Doanh thu hàng ngày**: Tổng doanh thu, số đơn hàng, giá trị trung bình
-- **Sản phẩm bán chạy**: Top sản phẩm với số lượng và doanh thu
-- **Đơn hàng gần đây**: Chi tiết các đơn hàng vừa hoàn thành
-- **Cảnh báo tồn kho**: Hiển thị các sản phẩm sắp hết hàng
-- **Real-time updates**: Cập nhật ngay khi có đơn hàng mới
-- **Auto reset**: Tự động reset khi qua ngày mới
-
-### 📦 Quản lý kho (`/stock-management`)
-- **Tồn kho**: Xem và quản lý tồn kho tất cả sản phẩm
-- **Nhập hàng**: Thêm hàng vào kho với giao dịch
-- **Điều chỉnh**: Điều chỉnh tồn kho với lý do
-- **Giao dịch**: Lịch sử tất cả giao dịch kho
-- **Cảnh báo**: Quản lý cảnh báo tồn kho thấp/hết hàng
-- **Thống kê**: Tổng quan tình trạng kho
-
-### 🖥️ Customer Display (`/display`)
-- **Professional Design**: Green tone design với clean white cards
+### 🖥️ Customer Display (`/customer`)
+- **Professional Design**: Giao diện chuyên nghiệp với animations
 - **Real-time Updates**: Hiển thị đơn hàng ngay khi có thay đổi từ POS
 - **Order Status**: Theo dõi trạng thái đơn hàng (creating, confirmed, paid, completed)
 - **Payment Info**: Hiển thị phương thức thanh toán và trạng thái
-- **Responsive Layout**: 70% order items, 30% price summary
+- **Responsive Layout**: Layout tối ưu cho màn hình khách hàng
 - **Việt hóa**: Giao diện hoàn toàn bằng tiếng Việt
+
+### 📡 Order Tracking (`/orders`)
+- **Real-time Tracking**: Theo dõi đơn hàng đang được tạo bởi nhân viên hoặc khách hàng
+- **Dual View**: Nhân viên thấy đơn hàng của khách, khách thấy đơn hàng của nhân viên
+- **Status Updates**: Cập nhật trạng thái real-time (creating → paid → preparing → completed)
+- **Order Details**: Hiển thị chi tiết sản phẩm, số lượng, giá tiền
+- **Auto Cleanup**: Tự động xóa đơn hàng đã hoàn thành sau 30 giây
 
 ### 💳 Thanh toán (`/checkout`)
 - **Multiple Payment Methods**: Tiền mặt, thẻ ngân hàng, QR code
 - **Customer Info**: Nhập thông tin khách hàng và bàn
 - **Order Summary**: Xem lại đơn hàng trước khi thanh toán
-- **Success Page**: Trang xác nhận thanh toán thành công
 - **Stock Deduction**: Tự động trừ tồn kho khi thanh toán thành công
+- **Ingredient Deduction**: Tự động trừ nguyên liệu theo công thức sản phẩm
+- **Order Tracking**: Cập nhật trạng thái đơn hàng sang "paid"
+
+### ✅ Order Success (`/order-success`)
+- **Success Confirmation**: Xác nhận đơn hàng đã được ghi nhận
+- **Order Details**: Hiển thị chi tiết đơn hàng vừa thanh toán
+- **Payment Info**: Thông tin phương thức thanh toán
+- **Order ID**: Mã đơn hàng để tra cứu
+- **Navigation**: Nút tạo đơn mới hoặc về trang chủ
+
+### 📊 Dashboard Doanh Thu (`/dashboard`)
+- **Doanh thu hàng ngày**: Tổng doanh thu, số đơn hàng, giá trị trung bình
+- **So sánh hôm qua**: So sánh với ngày hôm qua
+- **Sản phẩm bán chạy**: Top sản phẩm với số lượng và doanh thu
+- **Biểu đồ doanh thu theo giờ**: Hiển thị doanh thu theo từng giờ trong ngày
+- **Thống kê thanh toán**: Phân tích phương thức thanh toán (tiền mặt, thẻ, QR)
+- **Đơn hàng gần đây**: Chi tiết các đơn hàng vừa hoàn thành
+- **Real-time updates**: Cập nhật ngay khi có đơn hàng mới
+- **Auto reset**: Tự động reset khi qua ngày mới
+- **Reset Manual**: Nút reset dữ liệu với xác nhận
+
+### 📦 Quản lý kho (`/stock-management`)
+- **Tồn kho sản phẩm**: Xem và quản lý tồn kho tất cả sản phẩm
+- **Tồn kho nguyên liệu**: Quản lý nguyên liệu và công thức
+- **Nhập hàng**: Thêm hàng vào kho với giao dịch và lý do
+- **Điều chỉnh**: Điều chỉnh tồn kho với lý do chi tiết
+- **Giao dịch**: Lịch sử tất cả giao dịch kho (sản phẩm và nguyên liệu)
+- **Cảnh báo**: Quản lý cảnh báo tồn kho thấp/hết hàng
+- **Tìm kiếm**: Tìm kiếm sản phẩm/nguyên liệu theo tên
+- **Lọc danh mục**: Lọc sản phẩm theo danh mục
+- **Empty States**: Hiển thị trạng thái trống khi không có dữ liệu
+- **Real-time Updates**: Cập nhật real-time khi có thay đổi
 
 ## 🔄 Real-time Synchronization
 
-Hệ thống sử dụng **localStorage** và **Custom Events** để đồng bộ dữ liệu:
+Hệ thống sử dụng nhiều cơ chế để đồng bộ dữ liệu real-time:
 
 ### Cơ chế đồng bộ
+- **BroadcastChannel API**: Giao tiếp giữa các tab/window
 - **localStorage**: Lưu trữ dữ liệu và đồng bộ cross-tab
 - **Custom Events**: Cập nhật instant trong cùng tab
 - **Storage Events**: Lắng nghe thay đổi localStorage
-- **Real-time Updates**: Dashboard và Customer Display cập nhật ngay lập tức
+- **Polling**: Backup polling cho đảm bảo sync
 
 ### Data Flow
 ```
-POS Page → CartContext → localStorage → Custom Events
-                                 ↓
-Dashboard/Customer Display ← localStorage ← Storage Events
+POS Page → CartContext → BroadcastChannel → localStorage → Custom Events
+                                                              ↓
+Dashboard/Customer Display/Order Tracking ← localStorage ← Storage Events
+```
+
+### Order Tracking Flow
+```
+Staff/Customer Order → useOrderTracking → BroadcastChannel → localStorage
+                                                              ↓
+Order Display Page ← subscribeToOrders ← localStorage ← Storage Events
 ```
 
 ## 📦 Stock Management System
 
 ### Tính năng quản lý kho
 - **Product Stock Tracking**: Theo dõi tồn kho hiện tại, tối thiểu, tối đa
+- **Ingredient Stock Tracking**: Quản lý nguyên liệu và công thức
 - **Stock Operations**: Trừ hàng khi bán, thêm hàng khi nhập, điều chỉnh
-- **Stock Transactions**: Ghi lại tất cả giao dịch kho
+- **Stock Transactions**: Ghi lại tất cả giao dịch kho với timestamp và lý do
 - **Stock Alerts**: Cảnh báo tồn kho thấp, hết hàng, quá nhiều
 - **Auto Initialization**: Tự động khởi tạo tồn kho cho sản phẩm mới
+- **Recipe Management**: Quản lý công thức sản phẩm và trừ nguyên liệu tự động
 
 ### Cảnh báo tồn kho
 - **Low Stock**: Cảnh báo khi tồn kho dưới mức tối thiểu
 - **Out of Stock**: Cảnh báo khi hết hàng
 - **Overstock**: Cảnh báo khi tồn kho quá cao
 - **Real-time Alerts**: Hiển thị cảnh báo ngay lập tức
+- **Alert Panel**: Panel cảnh báo ở góc màn hình
 
 ## 🎨 Design System
 
 ### Color Palette
-- **Primary Background**: Green-50 → Emerald-50 → Teal-50 gradients
-- **Cards**: White/80 với green-200/30 borders
+- **Primary**: Orange tones (orange-500, orange-600) cho buttons và accents
+- **Background**: Gray-50 cho background chính
+- **Cards**: White với borders và shadows
 - **Text**: Gray-800 (headings), Gray-700 (secondary), Gray-600 (tertiary)
-- **Accents**: Emerald-400, Green-400, Teal-400, Lime-400
-- **Status Colors**: Green tones cho status indicators
+- **Status Colors**: 
+  - Green cho success/completed
+  - Yellow cho warning/low stock
+  - Red cho error/out of stock
+  - Blue cho info
 
 ### Typography
 - **Headings**: Large, bold với proper hierarchy
@@ -191,9 +273,24 @@ Dashboard/Customer Display ← localStorage ← Storage Events
 
 ### Animations
 - **Hover Effects**: Scale transforms và shadow changes
-- **Progress Bars**: Smooth transitions với green gradients
-- **Status Indicators**: Pulse animations cho live feedback
+- **Fade In**: Smooth fade-in animations cho elements
+- **Slide In**: Slide animations cho modals và panels
+- **Pulse**: Pulse animations cho live feedback
 - **Toast Notifications**: Smooth slide-in animations
+- **Staggered Animations**: Delayed animations cho lists
+
+## 🛣️ Routes
+
+| Route | Mô tả | Layout |
+|-------|-------|--------|
+| `/` | POS System - Trang chủ | POSLayoutNew |
+| `/product/:id` | Chi tiết sản phẩm | POSLayoutNew |
+| `/customer` | Customer Display | CustomerDisplayLayout |
+| `/checkout` | Thanh toán | POSLayoutNew |
+| `/order-success` | Xác nhận đơn hàng | MainLayout |
+| `/dashboard` | Dashboard doanh thu | MainLayout |
+| `/stock-management` | Quản lý kho | MainLayout |
+| `/orders` | Order Tracking | Standalone |
 
 ## 🧪 Testing
 
@@ -212,18 +309,10 @@ npm run test:ui
 npm run test:coverage
 ```
 
-### Test Coverage
-
-Dự án có test coverage cho:
-- ✅ **Components**: POSPage, CheckoutPage, OrderSuccessPage
-- ✅ **Hooks**: useCart, useProducts
-- ✅ **Context**: CartContext, ProductContext
-- ✅ **Utilities**: formatPrice, stockManagement
-
 ## 🔧 Cấu hình
 
 ### Environment Variables
-Tạo file `.env.local` trong thư mục gốc:
+Tạo file `.env.local` trong thư mục gốc (nếu cần):
 
 ```env
 VITE_API_URL=http://localhost:3001/api
@@ -231,25 +320,7 @@ VITE_APP_NAME=Ocha Việt POS
 ```
 
 ### Tailwind CSS
-Cấu hình trong `tailwind.config.js`:
-
-```javascript
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        primary: '#10b981', // Emerald
-        secondary: '#059669', // Green
-      },
-    },
-  },
-  plugins: [],
-}
-```
+Cấu hình trong `tailwind.config.js` hoặc sử dụng Tailwind CSS v4 với PostCSS.
 
 ## 📦 Build và Deploy
 
@@ -294,10 +365,11 @@ netlify deploy --prod --dir=dist
    ```
 
 4. **Open in browser**:
-   - POS System: `http://localhost:3000/pos`
+   - POS System: `http://localhost:3000/`
+   - Customer Display: `http://localhost:3000/customer`
    - Dashboard: `http://localhost:3000/dashboard`
    - Stock Management: `http://localhost:3000/stock-management`
-   - Customer Display: `http://localhost:3000/display`
+   - Order Tracking: `http://localhost:3000/orders`
    - Checkout: `http://localhost:3000/checkout`
 
 ## 🤝 Đóng góp
@@ -316,6 +388,7 @@ Chúng tôi hoan nghênh mọi đóng góp! Vui lòng làm theo các bước sau
 - Cập nhật documentation nếu cần
 - Đảm bảo build thành công
 - Maintain real-time sync functionality
+- Sử dụng TypeScript với proper types
 
 ## 📄 License
 
