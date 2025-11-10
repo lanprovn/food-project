@@ -44,8 +44,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = items.reduce((sum, item) => sum + item.totalPrice, 0);
     
-    console.log('🛒 Cart changed, syncing to display:', { items: items.length, totalItems, totalPrice });
-    
     // Always sync to display, even when cart is empty
     sendToDisplay(items, totalPrice, totalItems, 'creating');
     

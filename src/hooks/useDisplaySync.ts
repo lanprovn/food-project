@@ -62,7 +62,6 @@ export function useDisplaySync(): UseDisplaySyncReturn {
         data: displayData
       };
       
-      console.log('📤 Sending to display via BroadcastChannel:', message);
       // Check if channel is available before posting message
       if (channel) {
         try {
@@ -74,7 +73,6 @@ export function useDisplaySync(): UseDisplaySyncReturn {
 
       // Backup vào localStorage (fallback)
       localStorage.setItem(DISPLAY_STORAGE_KEY, JSON.stringify(displayData));
-      console.log('💾 Backup saved to localStorage');
       
       // Trigger custom event cho instant sync
       const customEvent = new CustomEvent('displayDataUpdate', { 
@@ -112,9 +110,7 @@ export function useDisplaySync(): UseDisplaySyncReturn {
     let intervalId: NodeJS.Timeout;
 
     const handleMessage = (event: MessageEvent<DisplaySyncMessage>) => {
-      console.log('📨 Received message:', event.data);
       if (event.data.type === 'cart_update') {
-        console.log('✅ Processing cart update');
         callback(event.data.data);
       }
     };
@@ -137,7 +133,6 @@ export function useDisplaySync(): UseDisplaySyncReturn {
           const dataHash = JSON.stringify(data);
           
           if (dataHash !== lastDataHash) {
-            console.log('📂 New data detected in localStorage:', data);
             lastDataHash = dataHash;
             callback(data);
           }
@@ -153,11 +148,8 @@ export function useDisplaySync(): UseDisplaySyncReturn {
         const stored = localStorage.getItem(DISPLAY_STORAGE_KEY);
         if (stored) {
           const data = JSON.parse(stored) as DisplayData;
-          console.log('📂 Loaded from localStorage:', data);
           lastDataHash = JSON.stringify(data);
           callback(data);
-        } else {
-          console.log('📂 No data in localStorage');
         }
       } catch (error) {
         console.error('Error loading display data from storage:', error);
@@ -175,7 +167,6 @@ export function useDisplaySync(): UseDisplaySyncReturn {
           const dataHash = JSON.stringify(data);
           
           if (dataHash !== lastDataHash) {
-            console.log('⚡ Instant update via storage event:', data);
             lastDataHash = dataHash;
             callback(data);
           }
@@ -191,7 +182,6 @@ export function useDisplaySync(): UseDisplaySyncReturn {
       const dataHash = JSON.stringify(data);
       
       if (dataHash !== lastDataHash) {
-        console.log('⚡ Instant update via custom event:', data);
         lastDataHash = dataHash;
         callback(data);
       }

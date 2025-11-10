@@ -5,13 +5,13 @@
   "type": "module",
   "author": "Lan Pro <lanprovn@gmail.com>",
   "license": "MIT",
-  "homepage": "https://github.com/lanprovn/food-project",
+  "homepage": "https://github.com/lanprovn/frontend",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lanprovn/food-project.git"
+    "url": "git+https://github.com/lanprovn/frontend.git"
   },
   "bugs": {
-    "url": "https://github.com/lanprovn/food-project/issues"
+    "url": "https://github.com/lanprovn/frontend/issues"
   },
   "keywords": [
     "pos",

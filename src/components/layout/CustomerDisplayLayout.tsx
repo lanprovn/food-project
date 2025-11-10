@@ -3,8 +3,9 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCartIcon, MagnifyingGlassIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 import { useCart } from '../../hooks/useCart';
 import { useProducts } from '../../hooks/useProducts';
-import ProductGrid from '../pos/ProductGrid';
-import ProductModal from '../pos/ProductModal';
+import ProductGrid from '../features/pos/product/ProductGrid';
+import ProductModal from '../features/pos/product/ProductModal';
+import { formatPrice } from '../../utils/formatPrice';
 import type { Product } from '../../types/product';
 
 /**
@@ -53,13 +54,6 @@ export default function CustomerDisplayLayout() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedProduct(null);
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(price);
   };
 
   const calculateTax = () => {

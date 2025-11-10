@@ -4,10 +4,11 @@ import { ShoppingCartIcon, MagnifyingGlassIcon, UserCircleIcon, ChartBarIcon, Cu
 import { useCart } from '../../hooks/useCart';
 import { useProducts } from '../../hooks/useProducts';
 import { usePOSDisplaySync } from '../../hooks/useDisplaySync';
-import ProductGrid from '../pos/ProductGrid';
-import ProductModal from '../pos/ProductModal';
-import StockInitializer from '../shared/StockInitializer';
-import StockAlertsPanel from '../shared/StockAlertsPanel';
+import ProductGrid from '../features/pos/product/ProductGrid';
+import ProductModal from '../features/pos/product/ProductModal';
+import StockInitializer from '../features/stock/alerts/StockInitializer';
+import StockAlertsPanel from '../features/stock/alerts/StockAlertsPanel';
+import { formatPrice } from '../../utils/formatPrice';
 import type { Product } from '../../types/product';
 
 /**
@@ -61,13 +62,6 @@ export default function POSLayoutNew() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedProduct(null);
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(price);
   };
 
   const calculateTax = () => {
@@ -386,37 +380,37 @@ export default function POSLayoutNew() {
         />
       )}
 
-      {/* Enhanced CSS Animations */}
+      {/* Enhanced CSS Animations with GPU acceleration */}
       <style>{`
         @keyframes slide-down {
           from {
-            transform: translateY(-100%);
+            transform: translateY(-100%) translateZ(0);
             opacity: 0;
           }
           to {
-            transform: translateY(0);
+            transform: translateY(0) translateZ(0);
             opacity: 1;
           }
         }
         
         @keyframes slide-in-left {
           from {
-            transform: translateX(-100%);
+            transform: translateX(-100%) translateZ(0);
             opacity: 0;
           }
           to {
-            transform: translateX(0);
+            transform: translateX(0) translateZ(0);
             opacity: 1;
           }
         }
         
         @keyframes slide-in-right {
           from {
-            transform: translateX(100%);
+            transform: translateX(100%) translateZ(0);
             opacity: 0;
           }
           to {
-            transform: translateX(0);
+            transform: translateX(0) translateZ(0);
             opacity: 1;
           }
         }
@@ -430,7 +424,7 @@ export default function POSLayoutNew() {
           }
         }
         
-        @keyframes pulse-slow {
+        @keyframes pulse-opacity {
           0%, 100% {
             opacity: 1;
           }
@@ -441,35 +435,45 @@ export default function POSLayoutNew() {
         
         @keyframes bounce-slow {
           0%, 100% {
-            transform: translateY(0);
+            transform: translateY(0) translateZ(0);
           }
           50% {
-            transform: translateY(-5px);
+            transform: translateY(-5px) translateZ(0);
           }
         }
         
         .animate-slide-down {
           animation: slide-down 0.5s ease-out;
+          will-change: transform, opacity;
+          transform: translateZ(0);
         }
         
         .animate-slide-in-left {
           animation: slide-in-left 0.5s ease-out;
+          will-change: transform, opacity;
+          transform: translateZ(0);
         }
         
         .animate-slide-in-right {
           animation: slide-in-right 0.3s ease-out;
+          will-change: transform, opacity;
+          transform: translateZ(0);
         }
         
         .animate-fade-in {
           animation: fade-in 0.5s ease-out;
+          will-change: opacity;
         }
         
         .animate-pulse-slow {
-          animation: pulse-slow 2s ease-in-out infinite;
+          animation: pulse-opacity 2s ease-in-out infinite;
+          will-change: opacity;
         }
         
         .animate-bounce-slow {
           animation: bounce-slow 2s ease-in-out infinite;
+          will-change: transform;
+          transform: translateZ(0);
         }
       `}</style>
     </div>

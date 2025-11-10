@@ -17,12 +17,12 @@ const POSLayoutNew = lazy(() => import('../components/layout/POSLayoutNew'));
 const CustomerDisplayLayout = lazy(() => import('../components/layout/CustomerDisplayLayout'));
 
 // ===== Lazy load pages =====
-const ProductDetailPage = lazy(() => import('../pages/ProductDetailPage'));
-const CheckoutPage = lazy(() => import('../pages/CheckoutPage'));
-const OrderSuccessPage = lazy(() => import('../pages/OrderSuccessPage'));
-const DashboardPage = lazy(() => import('../pages/DashboardPage'));
-const StockManagementPage = lazy(() => import('../pages/StockManagementPage'));
-const OrderDisplayPage = lazy(() => import('../pages/OrderDisplayPage'));
+const ProductDetailPage = lazy(() => import('../pages/ProductDetailPage/index'));
+const CheckoutPage = lazy(() => import('../pages/CheckoutPage/index'));
+const OrderSuccessPage = lazy(() => import('../pages/OrderSuccessPage/index'));
+const DashboardPage = lazy(() => import('../pages/DashboardPage/index'));
+const StockManagementPage = lazy(() => import('../pages/StockManagementPage/index'));
+const OrderDisplayPage = lazy(() => import('../pages/OrderDisplayPage/index'));
 
 // ===== Loader Component =====
 const PageLoader = () => (

@@ -25,34 +25,64 @@ export const ProductProvider: React.FC<ProductProviderProps> = ({ children }) =>
   const loadProducts = async (): Promise<void> => {
     setIsLoading(true);
     try {
-      // In a real app, this would be an API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setProducts(productsData.products);
-      setRestaurants(productsData.restaurants as Restaurant[]);
-      
-      // Add icons to categories
-      const categoriesWithIcons = productsData.categories.map((category, index) => ({
-        ...category,
-        icon: [
-          'fas fa-coffee',
-          'fas fa-birthday-cake', 
-          'fas fa-hamburger',
-          'fas fa-utensils',
-          'fas fa-bread-slice',
-          'fas fa-snowflake',
-          'fas fa-drumstick-bite',
-          'fas fa-pizza-slice',
-          'fas fa-fire',
-          'fas fa-bowl-food'
-        ][index] || 'fas fa-th-large'
+      // Load from mock data
+      const mockProducts: Product[] = productsData.products.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        image: p.image,
+        category: p.category,
+        restaurant: p.restaurant,
+        rating: p.rating || 0,
+        description: p.description || '',
+        discount: p.discount || 0,
+        isAvailable: p.stock > 0,
+        stock: p.stock || 0,
+        isPopular: p.isPopular || false,
+        tags: p.tags || [],
+        sizes: p.sizes || [],
+        toppings: p.toppings || [],
       }));
-      
-      setCategories(categoriesWithIcons);
-      setDiscountItems(productsData.discountItems);
-      setFilteredProducts(productsData.products);
+
+      const mockCategories: Category[] = productsData.categories.map((c: any) => ({
+        id: c.id,
+        name: c.name,
+        image: c.image,
+        description: c.description || '',
+        productCount: c.productCount || 0,
+        icon: 'fas fa-th-large',
+      }));
+
+      const mockRestaurants: Restaurant[] = productsData.restaurants.map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        image: r.image,
+        rating: r.rating || 0,
+        deliveryTime: r.deliveryTime || '',
+        deliveryFee: r.deliveryFee || 0,
+        categories: r.categories || [],
+      }));
+
+      const mockDiscounts: DiscountItem[] = productsData.discountItems.map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        image: d.image,
+        discount: d.discount || 0,
+        daysRemaining: d.daysRemaining || 0,
+      }));
+
+      setProducts(mockProducts);
+      setRestaurants(mockRestaurants);
+      setCategories(mockCategories);
+      setDiscountItems(mockDiscounts);
+      setFilteredProducts(mockProducts);
     } catch (error) {
       console.error('Error loading products:', error);
+      setProducts([]);
+      setRestaurants([]);
+      setCategories([]);
+      setDiscountItems([]);
+      setFilteredProducts([]);
     } finally {
       setIsLoading(false);
     }

@@ -1,5 +1,5 @@
 import AppRouter from './router/AppRouter';
-import ErrorBoundary from './components/shared/ErrorBoundary';
+import ErrorBoundary from './components/common/feedback/ErrorBoundary';
 
 function App() {
   return (

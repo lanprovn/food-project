@@ -95,19 +95,60 @@ export const IngredientProvider: React.FC<IngredientProviderProps> = ({ children
     }
   };
 
-  // Load all data
+  // Load all data from localStorage
   const loadIngredients = () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // Initialize ingredients if not exists
+      // Initialize ingredients from sample data if not exists
       initializeIngredients();
       
-      setIngredients(getAllIngredientStocks());
-      setTransactions(getIngredientTransactions());
-      setAlerts(getIngredientAlerts());
+      // Load from localStorage
+      const loadedIngredients: IngredientStock[] = [];
+      const loadedTransactions: IngredientTransaction[] = [];
+      const loadedAlerts: IngredientAlert[] = [];
+
+      // Load ingredients
+      ingredientsData.ingredients.forEach((ingredientData) => {
+        const stored = localStorage.getItem(`ingredient_${ingredientData.id}`);
+        if (stored) {
+          loadedIngredients.push(JSON.parse(stored));
+        } else {
+          const ingredient: IngredientStock = {
+            id: ingredientData.id,
+            name: ingredientData.name,
+            unit: ingredientData.unit,
+            currentStock: ingredientData.currentStock,
+            minStock: ingredientData.minStock,
+            maxStock: ingredientData.maxStock,
+            usedIn: ingredientData.usedIn,
+            lastUpdated: ingredientData.lastUpdated,
+            isActive: ingredientData.isActive
+          };
+          saveIngredientStock(ingredient);
+          loadedIngredients.push(ingredient);
+        }
+      });
+
+      // Load transactions from localStorage
+      const transactionsData = localStorage.getItem('ingredient_transactions');
+      if (transactionsData) {
+        loadedTransactions.push(...JSON.parse(transactionsData));
+      }
+
+      // Load alerts from localStorage
+      const alertsData = localStorage.getItem('ingredient_alerts');
+      if (alertsData) {
+        loadedAlerts.push(...JSON.parse(alertsData));
+      }
+
+      setIngredients(loadedIngredients);
+      setTransactions(loadedTransactions);
+      setAlerts(loadedAlerts);
     } catch (error) {
       console.error('Error loading ingredients:', error);
+      setIngredients([]);
+      setTransactions([]);
+      setAlerts([]);
     } finally {
       setIsLoading(false);
     }
